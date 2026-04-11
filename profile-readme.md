@@ -257,6 +257,10 @@ A strategic audit transitioning the Epic Games Store from a digital storefront t
 
 </div>
 
+<a href="https://punksql.vercel.app">
+  <img src="https://raw.githubusercontent.com/eduardocornelsen/cv-educornelsen/main/src/assets/projects/punksql/demo-iphone-converted.gif" width="100%" alt="PunkSQL — Mobile SQL Learning Platform Demo">
+</a>
+
 **What it is:**
 A mobile-first SQL learning platform with a cyberpunk terminal aesthetic. Write real SQL queries that execute in your browser using SQLite compiled to WebAssembly. No backend, no signup required to play.
 
@@ -588,6 +592,10 @@ Responder isso exige unir dados de 5+ plataformas, construir modelos de atribui�
 <h2 style="margin-top: 10px;">>_ PunkSQL — Plataforma de Aprendizado de SQL</h2>
 
 </div>
+
+<a href="https://punksql.vercel.app">
+  <img src="https://raw.githubusercontent.com/eduardocornelsen/cv-educornelsen/main/src/assets/projects/punksql/demo-iphone-converted.gif" width="100%" alt="PunkSQL — Demo Plataforma de Aprendizado de SQL">
+</a>
 
 **Plataforma mobile-first** para aprender SQL com estética cyberpunk. 80 desafios, 8 módulos (SELECT → CTEs), execução real de SQL no browser via SQLite/WASM, gamificação completa, Google OAuth, bilíngue EN/PT-BR.
 
