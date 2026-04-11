@@ -1,0 +1,28 @@
+# Eduardo Cornelsen — Analytics Engineer
+
+> Revenue Analytics Engineer for SaaS, Fintech & E-Commerce. I build data pipelines, AI agents, and analytics systems that drive commercial decisions.
+
+## About
+
+Eduardo Cornelsen is an Analytics Engineer based in Brazil, specializing in revenue analytics, data pipelines, and AI-powered data products. He builds end-to-end analytics infrastructure — from raw data ingestion to interactive dashboards and natural language interfaces.
+
+## Projects
+
+- **Full-Funnel AI Analytics Platform** — Production system that answers attribution questions in 15 seconds using plain English. Stack: LangChain, LangGraph, dbt, BigQuery, FastAPI, MCP.
+- **PunkSQL** — Mobile-first SQL learning tool with instant feedback and short-session design.
+- **RevOps Lead Engine** — AI lead scoring system using XAI (SHAP) and scikit-learn with explainable NDR analytics.
+- **MusicInsights AI** — AI consultant that explains why songs succeed or fail, trained on 160k+ tracks. Stack: LangChain, Gemini, Streamlit.
+- **Epic Store Analysis** — Data-driven analysis disproving that graphics quality drives review scores in game development.
+
+## Technical Stack
+
+- **Data**: dbt, BigQuery, Python, SQL, Pandas, scikit-learn
+- **AI/Agents**: LangChain, LangGraph, MCP (Model Context Protocol), Gemini, SHAP
+- **Frontend**: React, TypeScript, Vite, Tailwind CSS, D3.js, Three.js
+- **Infrastructure**: Google Cloud Run, Docker, GitHub Actions, Supabase
+- **Visualization**: Looker, Recharts, Plotly
+
+## Contact
+
+- Portfolio: https://eduardocornelsen.com
+- LinkedIn: https://www.linkedin.com/in/eduardocornelsen

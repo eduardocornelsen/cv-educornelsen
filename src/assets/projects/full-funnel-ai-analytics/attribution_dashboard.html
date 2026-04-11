@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attribution Dashboard — Full-Funnel Analytics</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d0d1a; color: #e2e8f0; min-height: 100vh; }
+  .dash { padding: 24px; max-width: 1400px; margin: 0 auto; }
+  .page-title { font-size: 18px; font-weight: 500; color: #e2e8f0; margin-bottom: 4px; }
+  .page-sub { font-size: 12px; color: #64748b; margin-bottom: 24px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .card { background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 12px; padding: 16px; }
+  .kpi-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+  .kpi-val { font-size: 26px; font-weight: 500; line-height: 1.1; }
+  .kpi-sub { font-size: 11px; color: #64748b; margin-top: 4px; }
+  .sec-title { font-size: 11px; color: #94a3b8; margin-bottom: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; }
+  .chart-wrap { position: relative; width: 100%; }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; font-size: 11px; color: #94a3b8; }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .legend-sq { width: 9px; height: 9px; border-radius: 2px; display: inline-block; flex-shrink: 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { color: #64748b; font-weight: 500; text-align: left; padding: 6px 8px; border-bottom: 1px solid #2a2a4a; font-size: 11px; }
+  td { padding: 7px 8px; border-bottom: 1px solid #1e1e38; color: #e2e8f0; }
+  tr:last-child td { border-bottom: none; }
+  .badge { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 4px; font-weight: 500; }
+  .badge-green { background: #064e3b; color: #34d399; }
+  .badge-amber { background: #451a03; color: #fbbf24; }
+  .badge-red { background: #4c0519; color: #f87171; }
+  .badge-blue { background: #0c2461; color: #60a5fa; }
+  .badge-purple { background: #2e1065; color: #a78bfa; }
+  .insight { background: #0f172a; border: 1px solid #2a2a4a; border-left: 3px solid #a78bfa; border-radius: 8px; padding: 14px 16px; margin-bottom: 20px; }
+  .insight-title { font-size: 12px; font-weight: 500; color: #a78bfa; margin-bottom: 6px; }
+  .insight-body { font-size: 12px; color: #94a3b8; line-height: 1.7; }
+  .insight-body strong { color: #e2e8f0; }
+  @media (max-width: 640px) {
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="dash">
+
+  <div class="page-title">Channel Attribution Dashboard</div>
+  <div class="page-sub">Google Ads · Meta Ads · GA4 — 90-day window · Linear attribution · Generated March 16, 2026</div>
+
+  <!-- KPI Cards -->
+  <div class="grid-4">
+    <div class="card">
+      <div class="kpi-label">Total Sessions</div>
+      <div class="kpi-val" style="color:#60a5fa">2,971,635</div>
+      <div class="kpi-sub">All channels · 90d</div>
+    </div>
+    <div class="card">
+      <div class="kpi-label">Total Conversions</div>
+      <div class="kpi-val" style="color:#34d399">74,978</div>
+      <div class="kpi-sub">CVR (session): 2.52%</div>
+    </div>
+    <div class="card">
+      <div class="kpi-label">Total Ad Spend</div>
+      <div class="kpi-val" style="color:#fbbf24">$643,069</div>
+      <div class="kpi-sub">Google + Meta · 90d</div>
+    </div>
+    <div class="card">
+      <div class="kpi-label">Blended ROAS</div>
+      <div class="kpi-val" style="color:#a78bfa">8.84×</div>
+      <div class="kpi-sub">Linear attr · 90d</div>
+    </div>
+  </div>
+
+  <!-- Waterfall + Scatter -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="sec-title">Multi-Channel Waterfall — Impressions, Clicks, Conversions</div>
+      <div class="legend">
+        <span><span class="legend-sq" style="background:#60a5fa"></span>Impressions (÷1000)</span>
+        <span><span class="legend-sq" style="background:#34d399"></span>Clicks (÷10)</span>
+        <span><span class="legend-sq" style="background:#fbbf24"></span>Conversions</span>
+      </div>
+      <div class="chart-wrap" style="height:240px"><canvas id="waterfallChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="sec-title">Efficiency — Spend vs ROAS (bubble = conversions)</div>
+      <div class="chart-wrap" style="height:270px"><canvas id="scatterChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Channel mix -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="sec-title">Channel Session Share — GA4 breakdown</div>
+    <div class="legend">
+      <span><span class="legend-sq" style="background:#60a5fa"></span>Paid Search</span>
+      <span><span class="legend-sq" style="background:#f87171"></span>Organic Search</span>
+      <span><span class="legend-sq" style="background:#34d399"></span>Direct</span>
+      <span><span class="legend-sq" style="background:#fbbf24"></span>Email</span>
+      <span><span class="legend-sq" style="background:#a78bfa"></span>Paid Social</span>
+      <span><span class="legend-sq" style="background:#94a3b8"></span>Referral / Organic Social</span>
+    </div>
+    <div class="chart-wrap" style="height:180px"><canvas id="mixChart"></canvas></div>
+  </div>
+
+  <!-- Top / Bottom performers -->
+  <div class="grid-2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="sec-title">Top 5 Performers by ROAS</div>
+      <table>
+        <thead><tr><th>Campaign</th><th>Platform</th><th>Spend</th><th>ROAS</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>Brand Awareness - Video</td><td style="color:#60a5fa">Meta</td><td>$53,042</td><td>11.84×</td><td><span class="badge badge-green">TOP</span></td></tr>
+          <tr><td>Retargeting - Add to Cart</td><td style="color:#60a5fa">Meta</td><td>$70,862</td><td>9.60×</td><td><span class="badge badge-green">TOP</span></td></tr>
+          <tr><td>Instagram Stories - Flash Sales</td><td style="color:#60a5fa">Meta</td><td>$83,513</td><td>7.98×</td><td><span class="badge badge-green">TOP</span></td></tr>
+          <tr><td>Prospecting - Lookalike</td><td style="color:#60a5fa">Meta</td><td>$90,797</td><td>7.43×</td><td><span class="badge badge-green">TOP</span></td></tr>
+          <tr><td>Catalog Sales - Dynamic</td><td style="color:#60a5fa">Meta</td><td>$92,622</td><td>6.91×</td><td><span class="badge badge-green">TOP</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="sec-title">Bottom 5 Performers by ROAS</div>
+      <table>
+        <thead><tr><th>Campaign</th><th>Platform</th><th>Spend</th><th>ROAS</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>YouTube - Brand Awareness</td><td style="color:#fbbf24">Google</td><td>$18,445</td><td>0.17×</td><td><span class="badge badge-red">PAUSE</span></td></tr>
+          <tr><td>Display - Retargeting</td><td style="color:#fbbf24">Google</td><td>$17,136</td><td>0.89×</td><td><span class="badge badge-red">PAUSE</span></td></tr>
+          <tr><td>Shopping - All Products</td><td style="color:#fbbf24">Google</td><td>$50,952</td><td>3.85×</td><td><span class="badge badge-amber">WATCH</span></td></tr>
+          <tr><td>Brand - Olist</td><td style="color:#fbbf24">Google</td><td>$76,994</td><td>3.63×</td><td><span class="badge badge-amber">WATCH</span></td></tr>
+          <tr><td>Generic - Home &amp; Garden</td><td style="color:#fbbf24">Google</td><td>$92,668</td><td>3.01×</td><td><span class="badge badge-amber">WATCH</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Attribution summary table -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="sec-title">Channel Attribution Summary</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Channel</th><th>Sessions</th><th>Engaged Sessions</th><th>Conversions</th>
+          <th>Engagement Rate</th><th>CVR (session)</th><th>Share</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="color:#f87171">Organic Search</td><td>743,373</td><td>408,531</td><td>17,575</td><td>54.96%</td><td>2.36%</td><td><span class="badge badge-red">25.0%</span></td></tr>
+        <tr><td style="color:#60a5fa">Paid Search</td><td>596,369</td><td>369,406</td><td>18,292</td><td>61.94%</td><td>3.07%</td><td><span class="badge badge-blue">20.1%</span></td></tr>
+        <tr><td style="color:#34d399">Direct</td><td>448,961</td><td>313,632</td><td>14,810</td><td>69.86%</td><td>3.30%</td><td><span class="badge badge-green">15.1%</span></td></tr>
+        <tr><td style="color:#a78bfa">Paid Social</td><td>532,470</td><td>238,282</td><td>8,638</td><td>44.75%</td><td>1.62%</td><td><span class="badge badge-purple">17.9%</span></td></tr>
+        <tr><td style="color:#fbbf24">Email</td><td>295,253</td><td>220,792</td><td>11,543</td><td>74.78%</td><td>3.91%</td><td><span class="badge badge-amber">9.9%</span></td></tr>
+        <tr><td style="color:#94a3b8">Referral</td><td>207,840</td><td>103,021</td><td>3,169</td><td>49.57%</td><td>1.52%</td><td>7.0%</td></tr>
+        <tr><td style="color:#94a3b8">Organic Social</td><td>147,369</td><td>58,079</td><td>951</td><td>39.41%</td><td>0.65%</td><td>5.0%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Insight -->
+  <div class="insight">
+    <div class="insight-title">⚡ Biggest Optimization Opportunity</div>
+    <div class="insight-body">
+      <strong>Pause Google YouTube &amp; Display immediately.</strong> YouTube Brand Awareness is generating ROAS of 0.17× (Google ROAS = conversions × $100 / cost: 32 × $100 / $18,445). Display Retargeting sits at 0.89× — both are burning $35,581 combined with near-zero returns. Reallocating that budget to Meta's top performers (Brand Awareness Video at 11.84× ROAS, Retargeting Add to Cart at 9.60×) could yield an estimated <strong style="color:#34d399">$320K+ incremental revenue</strong> on the same spend. Email has the highest CVR of all channels at 3.91% — scaling email investment is the lowest-cost, highest-return lever available.
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Waterfall
+new Chart(document.getElementById('waterfallChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Paid Search','Org. Search','Direct','Paid Social','Email','Referral','Org. Social'],
+    datasets: [
+      { label: 'Impressions (÷1000)', data: [596,743,449,532,295,208,147], backgroundColor: '#60a5fa44', borderColor: '#60a5fa', borderWidth: 1 },
+      { label: 'Clicks (÷10)', data: [5964,7434,4490,5325,2953,2078,1474], backgroundColor: '#34d39944', borderColor: '#34d399', borderWidth: 1 },
+      { label: 'Conversions', data: [18292,17575,14810,8638,11543,3169,951], backgroundColor: '#fbbf2466', borderColor: '#fbbf24', borderWidth: 1 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: '#64748b', font: { size: 10 }, maxRotation: 30 }, grid: { color: '#1e1e38' } },
+      y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#1e1e38' } }
+    }
+  }
+});
+
+// Bubble / scatter
+const scaleR = v => Math.max(6, Math.min(30, v / 280));
+new Chart(document.getElementById('scatterChart'), {
+  type: 'bubble',
+  data: {
+    datasets: [
+      {
+        label: 'Google Ads',
+        data: [
+          { x: 77,  y: 3.63, r: scaleR(2797) },
+          { x: 96,  y: 2.96, r: scaleR(2840) },
+          { x: 93,  y: 3.01, r: scaleR(2786) },
+          { x: 51,  y: 3.85, r: scaleR(1960) },
+          { x: 17,  y: 0.89, r: scaleR(153)  },
+          { x: 18,  y: 0.17, r: scaleR(32)   }
+        ],
+        backgroundColor: '#fbbf2466', borderColor: '#fbbf24', borderWidth: 1
+      },
+      {
+        label: 'Meta Ads',
+        data: [
+          { x: 91,  y: 7.43,  r: scaleR(6748) },
+          { x: 71,  y: 9.60,  r: scaleR(6802) },
+          { x: 53,  y: 11.84, r: scaleR(6281) },
+          { x: 93,  y: 6.91,  r: scaleR(6400) },
+          { x: 84,  y: 7.98,  r: scaleR(6666) }
+        ],
+        backgroundColor: '#60a5fa55', borderColor: '#60a5fa', borderWidth: 1
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    layout: { padding: 20 },
+    plugins: {
+      legend: { display: true, labels: { color: '#94a3b8', font: { size: 10 }, boxWidth: 10 } },
+      tooltip: { callbacks: { label: ctx => `Spend: $${ctx.parsed.x}K · ROAS: ${ctx.parsed.y}×` } }
+    },
+    scales: {
+      x: { title: { display: true, text: 'Spend ($K)', color: '#64748b', font: { size: 10 } }, ticks: { color: '#64748b', font: { size: 10 }, callback: v => '$'+v+'K' }, grid: { color: '#1e1e38' }, min: 0, max: 115 },
+      y: { title: { display: true, text: 'ROAS', color: '#64748b', font: { size: 10 } }, ticks: { color: '#64748b', font: { size: 10 }, callback: v => v+'×' }, grid: { color: '#1e1e38' }, min: -0.5, max: 14 }
+    }
+  }
+});
+
+// Channel mix bar
+const total = 2971635;
+const sessions = [596369, 743373, 448961, 295253, 532470, 207840, 147369];
+new Chart(document.getElementById('mixChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Paid Search','Org. Search','Direct','Email','Paid Social','Referral','Org. Social'],
+    datasets: [{
+      label: 'Session Share %',
+      data: sessions.map(v => parseFloat((v/total*100).toFixed(1))),
+      backgroundColor: ['#60a5fa','#f87171','#34d399','#fbbf24','#a78bfa','#94a3b8','#4b5563'],
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { display: false } },
+      y: { ticks: { color: '#64748b', font: { size: 10 }, callback: v => v+'%' }, grid: { color: '#1e1e38' } }
+    }
+  }
+});
+</script>
+</body>
+</html>

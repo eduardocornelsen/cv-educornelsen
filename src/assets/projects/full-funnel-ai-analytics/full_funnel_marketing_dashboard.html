@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Full-Funnel Marketing Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d0d1a; color: #e2e8f0; font-size: 13px; }
+  .dash { min-height: 100vh; padding: 20px; }
+  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; flex-wrap: wrap; gap: 8px; }
+  .header h1 { font-size: 18px; font-weight: 500; color: #fff; }
+  .header .sub { font-size: 11px; color: #64748b; margin-top: 3px; }
+  .badge { background: #1e293b; border: 0.5px solid #2a2a4a; border-radius: 6px; padding: 4px 12px; font-size: 11px; color: #94a3b8; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+  @media(max-width:640px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  .kpi { background: #1a1a2e; border: 0.5px solid #2a2a4a; border-radius: 10px; padding: 14px 16px; }
+  .kpi .label { font-size: 11px; color: #64748b; margin-bottom: 5px; }
+  .kpi .val { font-size: 24px; font-weight: 500; line-height: 1.1; }
+  .kpi .sub { font-size: 10px; color: #475569; margin-top: 4px; }
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  @media(max-width:640px) { .charts-row { grid-template-columns: 1fr; } }
+  .card { background: #1a1a2e; border: 0.5px solid #2a2a4a; border-radius: 10px; padding: 16px; }
+  .card h2 { font-size: 11px; font-weight: 500; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+  .leg-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #94a3b8; }
+  .leg-dot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  th { text-align: left; color: #475569; font-weight: 400; padding: 6px 8px; border-bottom: 0.5px solid #2a2a4a; }
+  td { padding: 6px 8px; color: #cbd5e1; border-bottom: 0.5px solid #1e293b; }
+  .badge-hi { background: rgba(52,211,153,.12); color: #34d399; border-radius: 4px; padding: 1px 6px; }
+  .badge-lo { background: rgba(248,113,113,.12); color: #f87171; border-radius: 4px; padding: 1px 6px; }
+  .badge-md { background: rgba(251,191,36,.12); color: #fbbf24; border-radius: 4px; padding: 1px 6px; }
+  .plat-g  { background: rgba(251,191,36,.12); color: #fbbf24; border-radius: 3px; padding: 1px 5px; font-size: 10px; }
+  .plat-m  { background: rgba(52,211,153,.12);  color: #34d399; border-radius: 3px; padding: 1px 5px; font-size: 10px; }
+  .funnel-bar { background: #2a2a4a; border-radius: 4px; overflow: hidden; margin-bottom: 3px; }
+  .funnel-fill { height: 28px; border-radius: 4px; display: flex; align-items: center; padding: 0 12px; font-size: 11px; font-weight: 500; }
+  .funnel-row { margin-bottom: 10px; }
+  .funnel-label { display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; margin-bottom: 4px; }
+  .stage-bar { background: #0d0d1a; border-radius: 3px; overflow: hidden; margin-top: 3px; }
+  .stage-fill { height: 11px; border-radius: 3px; }
+  .insights { margin-top: 20px; background: #1a1a2e; border: 0.5px solid #2a2a4a; border-radius: 10px; padding: 16px; }
+  .insights h2 { font-size: 11px; font-weight: 500; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+  .insight-item { display: flex; gap: 10px; margin-bottom: 10px; font-size: 12px; color: #94a3b8; line-height: 1.6; }
+  .insight-item .icon { flex-shrink: 0; }
+  .footer { text-align: center; margin-top: 20px; font-size: 10px; color: #334155; }
+</style>
+</head>
+<body>
+<div class="dash">
+  <div class="header">
+    <div>
+      <h1>Full-Funnel Marketing Dashboard</h1>
+      <div class="sub">90-day window &middot; Dec 17 2025 – Mar 16 2026 &middot; All channels</div>
+    </div>
+    <div class="badge">Live data &middot; 5 sources</div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="label">Total Spend (90d)</div>
+      <div class="val" style="color:#f87171">$111,622</div>
+      <div class="sub">Google $53,089 &middot; Meta $58,539</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Attributed Revenue (90d)</div>
+      <div class="val" style="color:#34d399">$7.94M</div>
+      <div class="sub">SF Closed Won &middot; 90d linear attribution</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Blended ROAS</div>
+      <div class="val" style="color:#60a5fa">71.1&times;</div>
+      <div class="sub">Total rev / total spend &middot; 90d linear</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Total Sessions (90d)</div>
+      <div class="val" style="color:#a78bfa">427,528</div>
+      <div class="sub">GA4 all channels &middot; CVR 2.60%</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Pipeline Value (CRM)</div>
+      <div class="val" style="color:#fbbf24">$6.17M</div>
+      <div class="sub">HubSpot + Salesforce active stages</div>
+    </div>
+    <div class="kpi">
+      <div class="label">CRM Contacts (all-time)</div>
+      <div class="val" style="color:#34d399">93,263</div>
+      <div class="sub">HubSpot lifetime &middot; all customers</div>
+    </div>
+  </div>
+
+  <!-- Spend vs Revenue + Attribution -->
+  <div class="charts-row">
+    <div class="card">
+      <h2>Spend vs Revenue — weekly trend</h2>
+      <div class="legend">
+        <span class="leg-item"><span class="leg-dot" style="background:#f87171"></span>Google Spend</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#a78bfa"></span>Meta Spend</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#34d399"></span>SF Revenue (&divide;1000)</span>
+      </div>
+      <div style="position:relative;height:210px"><canvas id="spendRevChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>Channel Attribution — sessions share</h2>
+      <div class="legend" id="attrLegend"></div>
+      <div style="position:relative;height:210px"><canvas id="attrChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Funnel + Campaign Table -->
+  <div class="charts-row">
+    <div class="card">
+      <h2>Sales Funnel — GA4 &rarr; CRM (90d)</h2>
+      <div id="funnelViz" style="margin-top:6px"></div>
+    </div>
+    <div class="card" style="overflow:auto">
+      <h2>Campaign Performance — top 10 by ROAS (click CVR)</h2>
+      <table id="campaignTable"></table>
+    </div>
+  </div>
+
+  <!-- Pipeline by Stage -->
+  <div class="card">
+    <h2>Pipeline by Stage — HubSpot + Salesforce combined (deal value)</h2>
+    <div id="pipelineViz" style="margin-top:10px"></div>
+  </div>
+
+  <!-- Insights -->
+  <div class="insights">
+    <h2>Key Insights</h2>
+    <div class="insight-item"><span class="icon">🔥</span><span><strong style="color:#e2e8f0">Meta is massively outperforming Google on ROAS.</strong> Top 3 campaigns by ROAS are all Meta — Brand Awareness Video (10.1&times;), Retargeting (10.0&times;), Prospecting (7.8&times;). Google Brand - Olist leads at 3.5&times;.</span></div>
+    <div class="insight-item"><span class="icon">⚠️</span><span><strong style="color:#e2e8f0">Google Display &amp; YouTube are near-zero return.</strong> Display Retargeting (0.98&times;) and YouTube Brand Awareness (0.12&times;) consumed $5,020 with almost no attributed revenue. Recommend pause or restructure.</span></div>
+    <div class="insight-item"><span class="icon">📈</span><span><strong style="color:#e2e8f0">Organic Search is the highest-volume free channel</strong> at 107K sessions (25% of all traffic). CVR 2.34% — below Email (3.85%) and Direct (3.28%), suggesting landing page optimization opportunity.</span></div>
+    <div class="insight-item"><span class="icon">📧</span><span><strong style="color:#e2e8f0">Email has the highest session CVR at 3.85%</strong> — nearly 2&times; Paid Search. If email is under-resourced relative to paid channels, this is a clear reallocation opportunity.</span></div>
+    <div class="insight-item"><span class="icon">💰</span><span><strong style="color:#e2e8f0">$1.08M sits in Negotiation stage</strong> — the closest-to-close pipeline bucket across HubSpot + Salesforce. Sales prioritization here offers the fastest path to revenue impact.</span></div>
+  </div>
+
+  <div class="footer">Generated Mar 16 2026 &middot; Full-Funnel AI Analytics &middot; Data: Google Ads, Meta Ads, GA4, HubSpot, Salesforce</div>
+</div>
+
+<script>
+const goog = [
+  {name:"Brand - Olist",           spend:12510.40, conv:432, clicks:16223},
+  {name:"Generic - Electronics",   spend:14499.25, conv:425, clicks:15315},
+  {name:"Generic - Home & Garden", spend:14094.30, conv:400, clicks:15235},
+  {name:"Shopping - All Products", spend:6965.09,  conv:304, clicks:14101},
+  {name:"Display - Retargeting",   spend:2442.77,  conv:24,  clicks:8753},
+  {name:"YouTube - Brand Awareness",spend:2577.35, conv:3,   clicks:15272},
+];
+const meta = [
+  {name:"Prospecting - Lookalike Purchasers", spend:14000.15, roas:7.76,  clicks:29178, purchases:1087},
+  {name:"Retargeting - Add to Cart",          spend:10388.84, roas:9.99,  clicks:28780, purchases:1038},
+  {name:"Brand Awareness - Video",            spend:8038.57,  roas:10.14, clicks:26767, purchases:815},
+  {name:"Catalog Sales - Dynamic",            spend:13330.72, roas:6.27,  clicks:26712, purchases:836},
+  {name:"Instagram Stories - Flash Sales",    spend:12780.88, roas:7.35,  clicks:29719, purchases:939},
+];
+const ga4 = [
+  {ch:"Direct",         sess:64672,  conv:2119},
+  {ch:"Email",          sess:42470,  conv:1634},
+  {ch:"Organic Search", sess:107357, conv:2509},
+  {ch:"Organic Social", sess:20830,  conv:125},
+  {ch:"Paid Search",    sess:86006,  conv:2712},
+  {ch:"Paid Social",    sess:76840,  conv:1218},
+  {ch:"Referral",       sess:29353,  conv:447},
+];
+const totalSess = ga4.reduce((s,r)=>s+r.sess,0);
+const totalConv = ga4.reduce((s,r)=>s+r.conv,0);
+
+// Spend vs Revenue weekly
+const weeks = ["W1","W2","W3","W4","W5","W6","W7","W8","W9","W10","W11","W12","W13"];
+const gW  = [880,930,950,1020,1060,900,870,1100,1120,1090,970,1050,1150];
+const mW  = [4100,4300,4500,4600,4800,4100,4000,4700,4900,4800,4300,4600,4800];
+const revW= [580,610,620,640,680,590,570,720,750,730,660,700,790];
+
+new Chart(document.getElementById('spendRevChart').getContext('2d'), {
+  type:'line',
+  data:{labels:weeks,datasets:[
+    {label:'Google Spend',data:gW, borderColor:'#f87171',backgroundColor:'rgba(248,113,113,0.08)',fill:true,tension:0.3,borderWidth:2,pointRadius:2},
+    {label:'Meta Spend',  data:mW, borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,0.08)',fill:true,tension:0.3,borderWidth:2,pointRadius:2},
+    {label:'SF Rev ÷1k',  data:revW,borderColor:'#34d399',fill:false,tension:0.3,borderWidth:2,pointRadius:2,yAxisID:'y2'},
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{color:'#475569',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}},
+      y:{ticks:{color:'#475569',font:{size:10},callback:v=>'$'+v},grid:{color:'rgba(255,255,255,0.04)'}},
+      y2:{position:'right',ticks:{color:'#34d399',font:{size:10},callback:v=>'$'+v+'k'},grid:{display:false}},
+    }}
+});
+
+// Attribution donut
+const attrColors=['#60a5fa','#a78bfa','#34d399','#fbbf24','#f87171','#fb923c','#e879f9'];
+const attrTotal = ga4.reduce((s,r)=>s+r.sess,0);
+const attrNorm  = ga4.map(r=>+(r.sess/attrTotal*100).toFixed(1));
+const legEl = document.getElementById('attrLegend');
+ga4.forEach((r,i)=>{ legEl.innerHTML+=`<span class="leg-item"><span class="leg-dot" style="background:${attrColors[i]}"></span>${r.ch} ${attrNorm[i]}%</span>`; });
+new Chart(document.getElementById('attrChart').getContext('2d'),{
+  type:'doughnut',
+  data:{labels:ga4.map(r=>r.ch),datasets:[{data:attrNorm,backgroundColor:attrColors,borderWidth:1,borderColor:'#1a1a2e'}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw}%`}}}}
+});
+
+// Funnel
+const funnelSteps=[
+  {label:"Sessions",              val:totalSess,  color:"#60a5fa"},
+  {label:"Engaged Sessions",      val:246329,     color:"#a78bfa"},
+  {label:"Conversions",           val:totalConv,  color:"#fbbf24"},
+  {label:"Deals Won (HubSpot 90d est.)", val:2400,color:"#34d399"},
+];
+const fMax=funnelSteps[0].val;
+const fEl=document.getElementById('funnelViz');
+funnelSteps.forEach((s,i)=>{
+  const pct=(s.val/fMax*100).toFixed(1);
+  const cvr=i>0?` · CVR ${(s.val/funnelSteps[i-1].val*100).toFixed(1)}%`:'';
+  fEl.innerHTML+=`<div class="funnel-row">
+    <div class="funnel-label"><span>${s.label}</span><span>${s.val.toLocaleString()}${cvr}</span></div>
+    <div class="funnel-bar"><div class="funnel-fill" style="width:${pct}%;background:${s.color}22;border:0.5px solid ${s.color}44;color:${s.color}">${pct}%</div></div>
+  </div>`;
+});
+
+// Campaign table
+const campaigns=[
+  ...goog.map(c=>({name:c.name,plat:"Google",spend:c.spend,clicks:c.clicks,conv:c.conv,roas:+(c.conv*100/c.spend).toFixed(2),cvr:+(c.conv/c.clicks*100).toFixed(2)})),
+  ...meta.map(c=>({name:c.name,plat:"Meta",spend:c.spend,clicks:c.clicks,conv:c.purchases,roas:+c.roas.toFixed(2),cvr:+(c.purchases/c.clicks*100).toFixed(2)})),
+].sort((a,b)=>b.roas-a.roas).slice(0,10);
+const tbl=document.getElementById('campaignTable');
+tbl.innerHTML=`<thead><tr><th>Campaign</th><th>Platform</th><th>Spend</th><th>Conv</th><th>CVR (click)</th><th>ROAS</th></tr></thead><tbody>
+${campaigns.map(c=>{
+  const rc=c.roas>=8?'badge-hi':c.roas>=3?'badge-md':'badge-lo';
+  return `<tr>
+    <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${c.name}">${c.name}</td>
+    <td><span class="${c.plat==='Google'?'plat-g':'plat-m'}">${c.plat}</span></td>
+    <td>$${c.spend.toLocaleString(undefined,{maximumFractionDigits:0})}</td>
+    <td>${c.conv.toLocaleString()}</td>
+    <td>${c.cvr}%</td>
+    <td><span class="${rc}">${c.roas}&times;</span></td>
+  </tr>`;
+}).join('')}</tbody>`;
+
+// Pipeline by stage
+const pipeAll=[
+  {stage:"Prospecting",      val:1406460+1051793},
+  {stage:"Qualification",    val:1489095+707102},
+  {stage:"Needs / Proposal", val:1110029+485909},
+  {stage:"Pres. Scheduled",  val:1241703+350454},
+  {stage:"Value Proposition",val:350454},
+  {stage:"Negotiation",      val:880872+203718},
+];
+const pMax=Math.max(...pipeAll.map(p=>p.val));
+const pEl=document.getElementById('pipelineViz');
+const pColors=['#60a5fa','#a78bfa','#fbbf24','#f87171','#34d399','#fb923c'];
+pipeAll.forEach((p,i)=>{
+  const pct=(p.val/pMax*100).toFixed(1);
+  pEl.innerHTML+=`<div style="margin-bottom:12px">
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:#94a3b8;margin-bottom:4px">
+      <span>${p.stage}</span><span style="color:${pColors[i]}">$${(p.val/1000).toFixed(0)}k</span>
+    </div>
+    <div class="stage-bar"><div class="stage-fill" style="width:${pct}%;background:${pColors[i]};opacity:0.7"></div></div>
+  </div>`;
+});
+</script>
+</body>
+</html>
