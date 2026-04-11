@@ -6,6 +6,68 @@
 
 ---
 
+## Start Here — One Prompt to Set Up Everything
+
+> **You do not need to be a programmer.** Open this project in **Claude Code** or **Google Antigravity IDE**, paste the prompt below, and the AI will walk you through every step interactively — reading your files, running commands, asking for your API keys when needed, and setting up your live site from scratch.
+
+### How to open the project in your AI IDE
+
+**Claude Code (terminal):**
+```bash
+# Install Claude Code if you haven't already
+npm install -g @anthropic-ai/claude-code
+
+# Open this project
+cd cv-educornelsen
+claude
+```
+
+**Google Antigravity IDE:**
+Open Antigravity → File → Open Folder → select the `cv-educornelsen` folder.
+
+---
+
+### The prompt — copy and paste this exactly
+
+```
+Read the README.md file in this project carefully. Then act as my personal setup guide and execute the full setup from start to finish, step by step.
+
+Here is what I need you to do:
+
+1. Read README.md and build a clear step-by-step plan before doing anything.
+2. Walk me through each step interactively:
+   - Before running any command, explain what it does in plain English.
+   - When you need a secret or API key from me (Gemini, LangFuse, Google Analytics, GCP), pause and ask me for it clearly — tell me exactly where to get it and what to paste.
+   - Run the command or make the change, then confirm it worked before moving on.
+3. Set up the full environment:
+   - Clone/install dependencies
+   - Create the .env file from .env.example and fill it with my values
+   - Configure Google Analytics (ask me for my Measurement ID)
+   - Configure Gemini API key (ask me for it)
+   - Configure LangFuse (ask me for the keys)
+   - Run the site locally to confirm it works
+4. Set up Google Cloud Platform:
+   - Help me create a GCP project
+   - Enable Cloud Run and Artifact Registry APIs
+   - Create the Artifact Registry repository
+   - Create a service account and download the JSON key
+5. Set up GitHub CI/CD:
+   - Help me create a GitHub repository (if I don't have one yet)
+   - Add all required GitHub Secrets (GCP_PROJECT_ID, GCP_SA_KEY, GEMINI_API_KEY)
+   - Update the deploy.yml workflow file with my project details
+   - Push the code and watch the first deployment succeed
+6. Verify the live deployment:
+   - Confirm the site is accessible on the Cloud Run URL
+   - Test the chatbot is responding
+   - Show me where to find my LangFuse traces
+
+If anything fails, diagnose the error and fix it before moving on. Never skip a step. Ask me one thing at a time — do not overwhelm me with multiple questions at once.
+
+Start now by reading README.md and telling me the plan.
+```
+
+---
+
 ## What This Is
 
 A personal portfolio website built from scratch with React + TypeScript. It includes an AI chatbot (powered by Google Gemini) that answers questions about Eduardo's experience, projects, and background. The site is fully containerized with Docker and deploys automatically to Google Cloud Run whenever you push to the `main` branch.
