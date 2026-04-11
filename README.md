@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="src/assets/projects/portfolio-infra/lp.webp" alt="Eduardo Cornelsen Portfolio" width="100%" />
+</div>
+
 # Eduardo Cornelsen — Portfolio + AI Chatbot
 
 > Engineered a production-grade personal portfolio with a streaming AI chatbot, containerized via Docker, and deployed through a zero-touch CI/CD pipeline on Google Cloud Run — demonstrating full-stack ownership, LLMOps observability, and 4-layer prompt-injection security at $0/month infrastructure cost.
