@@ -341,6 +341,14 @@ Browser → React 19 + Vite (SSE streaming) → Express proxy → Gemini 2.5 Fla
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://spotify-music-insights-ai.streamlit.app/)
 
+</div>
+
+<a href="https://spotify-music-insights-ai.streamlit.app/">
+  <img src="https://raw.githubusercontent.com/eduardocornelsen/cv-educornelsen/main/src/assets/projects/spotify-project/insights.webp" width="100%" alt="MusicInsights AI — Conversational BI Dashboard">
+</a>
+
+<div align="center">
+
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![LangChain](https://img.shields.io/badge/LangChain-white?style=for-the-badge&logo=langchain&logoColor=black)
 ![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white)
@@ -646,6 +654,10 @@ A infraestrutura de produção que roda este portfólio — não um projeto para
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://spotify-music-insights-ai.streamlit.app/)
 
 </div>
+
+<a href="https://spotify-music-insights-ai.streamlit.app/">
+  <img src="https://raw.githubusercontent.com/eduardocornelsen/cv-educornelsen/main/src/assets/projects/spotify-project/insights.webp" width="100%" alt="MusicInsights AI — Dashboard de BI Conversacional">
+</a>
 
 Dashboard interativo com **Consultor IA** — gestores perguntam em português e recebem respostas baseadas em 100 anos de dados musicais (170k+ tracks).
 
