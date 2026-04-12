@@ -1,15 +1,24 @@
 name: Build and Deploy to Cloud Run
 
+# Trigger is set to manual (workflow_dispatch) so this template repo
+# does not auto-run without the required GitHub Secrets configured.
+#
+# Once you have completed the GCP setup in the README (Steps 8–9),
+# change the trigger to auto-deploy on push:
+#
+#   on:
+#     push:
+#       branches:
+#         - main
+#
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  REGION: us-central1
-  SERVICE_NAME: portfolio-eduardo
-  REPOSITORY: portfolio-repo
+  REGION: us-central1          # Change to your GCP region if different
+  SERVICE_NAME: my-portfolio   # Change to your desired Cloud Run service name
+  REPOSITORY: portfolio-repo   # Must match the Artifact Registry repo you created
 
 jobs:
   deploy:
