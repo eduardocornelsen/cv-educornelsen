@@ -18,11 +18,14 @@
 
 **Claude Code (terminal):**
 ```bash
-# Install Claude Code if you haven't already
+# 1. Clone the repository
+git clone https://github.com/eduardocornelsen/cv-educornelsen.git
+cd cv-educornelsen
+
+# 2. Install Claude Code if you haven't already
 npm install -g @anthropic-ai/claude-code
 
-# Open this project
-cd cv-educornelsen
+# 3. Open the project
 claude
 ```
 
