@@ -33,10 +33,12 @@ export const trackPageView = (path?: string) => {
 export const trackEvent = (category: string, action: string, label?: string, extraParams: Record<string, any> = {}) => {
   // Standardize the action to snake_case for GA4 compatibility
   const eventName = action.toLowerCase().replace(/\s+/g, '_');
-  
+  const isDev = import.meta.env.DEV;
+
   ReactGA.event(eventName, {
     event_category: category,
     event_label: label,
-    ...extraParams // This allows us to pass specific keys like project_name, skill_name, etc.
+    ...(isDev ? { debug_mode: true } : {}),
+    ...extraParams
   });
 };
