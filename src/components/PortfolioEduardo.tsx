@@ -10,9 +10,10 @@ import punksqlReadme from '../content/projects/punksql/README.md?raw';
 import leadEngineReadme from '../content/projects/lead_engine/README.md?raw';
 import epicReadme from '../content/projects/epic-store-analysis/README.md?raw';
 import musicReadme from '../content/projects/music-insights-ai-alt/README.md?raw';
+import portfolioInfraReadme from '../content/projects/portfolio-infra/README.md?raw';
 import { 
     ArrowRight, LineChart as BarChart3, Bot, Zap, BookOpen, Database, 
-    X, Menu, Mail, Linkedin, Sparkles, TrendingUp, Briefcase, GraduationCap, ChevronLeft, ChevronRight, Quote 
+    X, Menu, Mail, Linkedin, Sparkles, TrendingUp, Briefcase, GraduationCap, ChevronLeft, ChevronRight, Quote, ShoppingBag, Globe, Terminal
 } from 'lucide-react';
 const TorusField = lazy(() => import('./TorusField'));
 const AboutTorus = lazy(() => import('./AboutTorus'));
@@ -67,11 +68,29 @@ import antigravityLogo from '../assets/logos/antigravity.png';
 import vscodeLogo from '../assets/logos/vscode.webp';
 import dockerLogo from '../assets/logos/docker.svg';
 import supabaseLogo from '../assets/logos/supabase.svg';
+import cloudrunLogo from '../assets/logos/cloudrun.png';
+import langfuseLogo from '../assets/logos/langfuse.svg';
 import insperLogo from '../assets/logos/insper.svg';
 import aarhusLogo from '../assets/logos/aarhus.png';
 import mitLogo from '../assets/logos/mit.svg';
 import sixSigmaLogo from '../assets/logos/lean-six-sigma.svg';
 import downloadIcon from '../assets/logos/download.svg';
+import omiePng from '../assets/logos/omie.png';
+import omieSvg from '../assets/logos/omie.svg';
+import shopifyLogo from '../assets/logos/shopify.svg';
+import nuvemshopLogo from '../assets/logos/nuvemshop.svg';
+import woocommerceLogo from '../assets/logos/woocommerce.svg';
+import mercadolivreLogo from '../assets/logos/mercadolivre.svg';
+import facebookmarketLogo from '../assets/logos/facebookmarketplace.svg';
+import olxLogo from '../assets/logos/olx.svg';
+import webmotorsLogo from '../assets/logos/webmotors.svg';
+import blingLogo from '../assets/logos/bling.svg';
+import tinyLogo from '../assets/logos/tiny.svg';
+import ga4Logo from '../assets/logos/ga4.svg';
+import gtmLogo from '../assets/logos/gtm.svg';
+import googleAdsLogo from '../assets/logos/googleads.svg';
+import metaLogo from '../assets/logos/meta.svg';
+import epicGamesLogo from '../assets/logos/epicgames.svg';
 
 // Navigate sections
 const NAV_SECTIONS = ['experience', 'projects', 'skills', 'viz', 'about'] as const;
@@ -155,6 +174,7 @@ const TECH_LOGOS: Record<string, string> = {
     "SQL": sqlLogo,
     "PostgreSQL": sqlLogo,
     "dbt": dbtLogo,
+    "dbt Core": dbtLogo,
     "Polars": polarsLogo,
     "Pandas": pandasLogo,
     "Git": gitLogo,
@@ -180,6 +200,7 @@ const TECH_LOGOS: Record<string, string> = {
     "NotebookLM": notebooklmLogo,
     "Gemini API": geminiLogo,
     "Gemini 3 Flash": geminiLogo,
+    "Gemini Flash": geminiLogo,
     "Gemini CLI": geminiLogo,
     "Claude API": claudeLogo,
     "Claude": claudeLogo,
@@ -209,58 +230,137 @@ const TECH_LOGOS: Record<string, string> = {
     "Vercel": vercelLogo,
     "Docker": dockerLogo,
     "GitHub Actions": githubActionsLogo,
+    "Google Cloud Run": cloudrunLogo,
+    "LangFuse": langfuseLogo,
+    "Langfuse": langfuseLogo,
+    "Gemini": geminiLogo,
     "Plotly": plotlyLogo,
     "SciPy": scipyLogo,
     "Scikit-Learn": scikitlearnLogo,
+    "Omie": omieSvg,
+    "Excel/Google Sheets": excelLogo,
+    "Excel / Google Sheets": excelLogo,
+    "Python Scripts": pythonLogo,
+    "GA4": ga4Logo,
+    "GTM": gtmLogo,
+    "GA4 / GTM": ga4Logo,
+    "Google Ads": googleAdsLogo,
+    "Meta Ads": metaLogo,
+    "Google Ads / Meta Ads": googleAdsLogo,
+    "Facebook Marketplace": facebookmarketLogo,
+    "Semantic Layer": dbtLogo,
+    "Shopify": shopifyLogo,
+    "NuvemShop": nuvemshopLogo,
+    "WooCommerce": woocommerceLogo,
+    "Mercado Livre": mercadolivreLogo,
+    "OLX": olxLogo,
+    "WebMotors": webmotorsLogo,
+    "Bling": blingLogo,
+    "Tiny": tinyLogo,
+    // Combo aliases for expanded-state rows
+    "Pandas / Polars": pandasLogo,
+    "React / Next.js": reactLogo,
+    "D3.js / Plotly / Recharts": d3Logo,
+    "GCP + Cloudflare": gcpLogo,
+    "API Integration": pythonLogo,
 };
 
 const SKILL_ITEMS = [
     {
         icon: <Database className="w-5 h-5" />,
         title: "Data Engineering & Pipelines",
-        desc: "End-to-end pipelines from raw source to analytics layer.",
-        detail: "Built 29-model dbt pipelines with Semantic Layer integration. Designed ETL/ELT workflows unifying 10+ data sources (ERPs, CRMs, marketplaces). Proficient in advanced SQL (window functions, CTEs, recursive queries). Applied dbt best practices: tests, documentation, incremental models, and snapshots.",
-        tags: ["PostgreSQL", "Python", "dbt", "Semantic Layer", "ETL/ELT", "Polars", "Pandas", "SciPy", "CouchDB", "Docker", "Git", "Bash"],
+        desc: "Designing robust ETL/ELT workflows and scalable data models.",
+        tags: ["PostgreSQL", "Python", "dbt Core", "Semantic Layer", "Pandas", "DuckDB", "Git", "GitHub Actions", "Docker", "Bash"],
+        contextItems: [
+            { tool: "PostgreSQL",      context: "Primary OLTP source · Torus client stack" },
+            { tool: "Python",          context: "Core language · ETL, automation, modeling" },
+            { tool: "dbt Core",         context: "29 models · Medallion Architecture · 2.2M rows" },
+            { tool: "Semantic Layer",  context: "dbt MetricFlow · metric governance" },
+            { tool: "Pandas / Polars", context: "Data transformation & ELT processing" },
+            { tool: "DuckDB",          context: "Local execution layer · Full-Funnel analytics pipeline" },
+            { tool: "Git",             context: "Version control · all projects" },
+            { tool: "GitHub Actions",  context: "CI/CD · portfolio & pipeline repos" },
+            { tool: "Docker",          context: "Containerized pipeline environments" },
+            { tool: "Bash",            context: "Pipeline automation & scripting" },
+        ],
         gradient: "from-emerald-500 to-teal-500",
     },
     {
-        icon: <Database className="w-5 h-5" />,
-        title: "Cloud Data Platforms",
-        desc: "Architecting scalable warehouses and lakehouse environments.",
-        detail: "Architected BigQuery analytics layers for 2.2M+ row pipelines. Worked with Databricks (PySpark, notebooks, SQL) for product analytics and feature engineering in lakehouse environments. Experience with Snowflake data sharing and DuckDB for local analytics.",
-        tags: ["BigQuery", "Databricks", "Snowflake", "DuckDB", "PySpark", "GCP", "Tailscale"],
+        icon: <Terminal className="w-5 h-5" />,
+        title: "Data Platforms & Warehousing",
+        desc: "Cloud warehouses, lakehouses, and embedded engines for analytics at every scale.",
+        tags: ["BigQuery", "DuckDB", "Databricks", "PySpark", "Snowflake", "GCP"],
+        contextItems: [
+            { tool: "BigQuery",   context: "Primary warehouse · Torus client stack" },
+            { tool: "DuckDB",     context: "Local analytics engine · embedded warehouse · Full-Funnel AI Platform" },
+            { tool: "Databricks", context: "PySpark notebooks · TripleTen lakehouse · 2× fundamentals certs" },
+            { tool: "PySpark",    context: "Feature engineering · Databricks environment" },
+            { tool: "GCP",        context: "Cloud Run, Storage · supporting BigQuery workflows" },
+            { tool: "Snowflake",  context: "Architecture & design patterns · studied" },
+        ],
         gradient: "from-cyan-500 to-sky-500",
     },
     {
         icon: <Bot className="w-5 h-5" />,
         title: "AI Agents & Infrastructure",
         desc: "Building LLM-powered agents and natural language data interfaces.",
-        detail: "Built 'Chat with Data' AI agents using LangChain and LangGraph. Integrated MCP (Model Context Protocol) for natural language querying over dbt Semantic Layer — delivering answers in 15 seconds. Used MLFlow for experiment tracking. Developed FastAPI backends for AI-powered analytics.",
-        tags: ["LangChain", "LangGraph", "Scikit-Learn", "MCP", "Google Antigravity", "Claude Code", "Gemini CLI", "VS Code", "MLFlow", "FastAPI"],
+        tags: ["Google Antigravity", "Claude Code", "Gemini Flash", "LangChain", "MCP", "FastAPI", "Scikit-Learn", "Langfuse"],
+        contextItems: [
+            { tool: "Google Antigravity", context: "Primary agentic IDE · Claude Code + Gemini Flash" },
+            { tool: "Claude Code",        context: "Agentic coding · Antigravity, Desktop & Mobile" },
+            { tool: "Gemini Flash",       context: "Portfolio chatbot · Antigravity IDE · TripleTen agents" },
+            { tool: "LangChain",          context: "Chat with Data agents · TripleTen" },
+            { tool: "MCP",                context: "7 servers · Full-Funnel AI Platform" },
+            { tool: "FastAPI",            context: "XGBoost lead scoring endpoint" },
+            { tool: "Scikit-Learn",       context: "XGBoost lead scoring model" },
+            { tool: "Langfuse",           context: "LLM observability · portfolio chatbot" },
+        ],
         gradient: "from-violet-500 to-purple-500",
     },
     {
         icon: <Zap className="w-5 h-5" />,
         title: "Automation & Revenue Ops",
         desc: "Eliminating manual work through intelligent workflow orchestration.",
-        detail: "Eliminated 50+ hours/month of manual reporting via Python + n8n automation. Built intelligent lead scoring and routing workflows reducing SDR inbound response times from days to minutes. Automated ad performance and financial reporting pipelines via API integrations.",
-        tags: ["n8n", "GitHub Actions", "CI/CD", "Lead Scoring", "SDR Automation", "API Integration", "Python Scripts", "NotebookLM", "Obsidian"],
+        tags: ["n8n", "Python Scripts", "API Integration", "NotebookLM", "Obsidian"],
+        contextItems: [
+            { tool: "n8n",            context: "SDR automation workflows · Torus clients" },
+            { tool: "Python Scripts", context: "ETL automation · reporting pipelines" },
+            { tool: "API Integration",context: "Multi-platform data connectors" },
+            { tool: "NotebookLM",     context: "Research & knowledge synthesis" },
+            { tool: "Obsidian",       context: "Systems documentation & knowledge base" },
+        ],
         gradient: "from-amber-500 to-orange-500",
     },
     {
         icon: <BarChart3 className="w-5 h-5" />,
-        title: "BI & Executive Reporting",
-        desc: "Decision-ready dashboards adopted as the primary operating view.",
-        detail: "Built 20+ Looker Studio dashboards integrating 10+ data sources, adopted as the primary operating view across 4 client verticals. Delivered Tableau-based BI for enterprise clients (Gerdau, 8,000+ employees across 7 countries). Designed executive P&L, cash flow, and margin reporting systems reducing daily manual work from 2h to 10min.",
-        tags: ["Looker Studio", "Tableau", "Power BI", "Excel", "Google Sheets", "Streamlit"],
+        title: "BI, Analytics & Marketing",
+        desc: "Decision-ready dashboards and marketing attribution analytics.",
+        tags: ["Looker Studio", "Tableau", "Excel / Google Sheets", "Streamlit", "GA4 / GTM", "Google Ads / Meta Ads"],
+        contextItems: [
+            { tool: "Looker Studio",        context: "20+ dashboards · 4 client verticals" },
+            { tool: "Tableau",              context: "TripleTen projects · Mandalah/Gerdau · 4,000+ employees · 7 countries" },
+            { tool: "Excel / Google Sheets",context: "Financial models · P&L reporting" },
+            { tool: "Streamlit",            context: "Interactive data apps" },
+            { tool: "GA4 / GTM",            context: "Tag management · Torus client stack" },
+            { tool: "Google Ads / Meta Ads",context: "R$100K+ media · ~20% CPA reduction" },
+        ],
         gradient: "from-rose-500 to-pink-500",
     },
     {
-        icon: <TrendingUp className="w-5 h-5" />,
+        icon: <Sparkles className="w-5 h-5" />,
         title: "Custom Viz & Frontend",
-        desc: "Interactive dashboards and data apps built from the ground up.",
-        detail: "Built real-time React dashboards with 15-second refresh cycles on live data. Developed PunkSQL (Next.js + SQLite/WASM, 80 SQL challenges). Created interactive Streamlit dashboards for ML analysis: MusicInsights AI (160k+ tracks) and Epic Games UX audit. Experienced in D3.js and Recharts for custom data visualizations.",
-        tags: ["React", "TypeScript", "Next.js", "Vite", "Supabase", "Vercel", "D3.js", "Plotly", "Recharts", "TailwindCSS", "Streamlit", "SQLite/WASM"],
+        desc: "Building interactive data applications and high-performance frontends.",
+        tags: ["React / Next.js", "TypeScript", "TailwindCSS", "SQLite/WASM", "D3.js / Plotly / Recharts", "Vite"],
+        contextItems: [
+            { tool: "React / Next.js",         context: "PunkSQL app · portfolio site" },
+            { tool: "TypeScript",              context: "Type-safe frontend development" },
+            { tool: "TailwindCSS",             context: "Portfolio site + Torus client dashboards" },
+            { tool: "SQLite/WASM",             context: "In-browser SQL engine · PunkSQL" },
+            { tool: "D3.js / Plotly / Recharts",context: "Custom chart components" },
+            { tool: "Vite",                    context: "Portfolio site build tool" },
+            { tool: "GCP + Cloudflare",        context: "Portfolio site hosting & CDN" },
+            { tool: "Vercel",                  context: "PunkSQL deployment" },
+        ],
         gradient: "from-indigo-500 to-blue-500",
     },
 ];
@@ -444,6 +544,21 @@ const PROJECTS: ProjectData[] = [
         },
     },
     {
+        title: "Portfolio Infrastructure & AI Chatbot",
+        outcome: "Cloud Run · 4-Layer Security · LLMOps",
+        desc: "Built the production infrastructure behind this site: a streaming AI chatbot (Gemini + SSE), containerized via multi-stage Docker, deployed via GitHub Actions to Google Cloud Run, with LangFuse tracing every conversation for cost, latency, and jailbreak detection. Zero-cost at idle, zero-touch deploys.",
+        media: [
+            { type: 'image', src: new URL('../assets/projects/portfolio-infra/lp.webp', import.meta.url).href },
+            { type: 'image', src: new URL('../assets/projects/portfolio-infra/lang-fuse.webp', import.meta.url).href },
+        ],
+        gradient: "from-slate-500 to-zinc-600",
+        tags: ["Google Cloud Run", "Docker", "GitHub Actions", "Gemini", "LangFuse", "React", "TypeScript"],
+        github: "https://github.com/eduardocornelsen/cv-educornelsen",
+        liveUrl: "https://eduardocornelsen.com",
+        readme: portfolioInfraReadme,
+        images: {},
+    },
+    {
         title: "MusicInsights AI",
         outcome: "160k+ Tracks · 100 Years of Data",
         desc: "What separates a hit from a miss? I analyzed 160k+ tracks spanning 100 years of music evolution using an AI consultant powered by LangChain and Gemini 3 Flash — surfacing interactive trend visualizations and answering music insight questions in natural language.",
@@ -483,22 +598,24 @@ const EXPERIENCES = [
     },
     {
         role: "Business Intelligence & Analytics Lead",
-        company: "Torus Analytics",
+        company: "Torus Analytics · Remote",
         period: "Jul 2021 - Present",
         logo: new URL('../assets/logos/torus-logo.svg', import.meta.url).href,
+        intro: "Independent analytics consultancy serving SMB clients across automotive, retail, agribusiness, and hospitality.",
         bullets: [
             "Built 20+ Looker Studio dashboards integrating 10+ data sources (CRMs, GA4/GTM, Google/Meta Ads, ERPs, POS, bank feeds) — adopted as the primary operating view across 4 client verticals.",
             "Developed 10+ financial reporting systems (cash flow, P&L, margin). Automated bank reconciliation reduced daily manual work from ~2h to ~10min, enabling near-real-time tracking.",
             "Managed R$100K+ in annual media budgets across Google, Meta, and 10+ marketplaces — achieving ~20% average CPA reduction through channel mix optimization.",
+            "Designed and maintained ELT workflows unifying data across 10+ platforms (Shopify, Mercado Livre, OLX, WooCommerce, NuvemShop) and 3 ERPs (Omie, Bling, Tiny) into consolidated analytics layers.",
             "Automated recurring reporting with Python scripts, API integrations, and n8n — eliminating 50+ hours/month of manual data handling."
         ]
     },
     {
         role: "Senior Sales Executive · Consultative SaaS ERP Sales",
-        company: "Omie",
+        company: "Omie · São Paulo, Brazil · Hybrid",
         period: "Mar 2019 - May 2021",
-        logo: new URL('../assets/logos/omie.png', import.meta.url).href,
-        intro: "Brazil's leading cloud ERP & Fintech platform (raised $160M Series D in 2025 at $700M+ valuation). Promoted Junior → Senior in 10 months. One of ~15 retained from a ~90-person commercial team during post-COVID restructuring. Contributed to 200+ ERP adoptions across SMB and enterprise segments.",
+        logo: omiePng,
+        intro: "Analytical and commercial leadership at Brazil's leading cloud ERP & Fintech platform (raised $160M Series D in 2025 at $700M+ valuation). Promoted Junior → Senior in 10 months. One of ~15 retained from a ~90-person commercial team during post-COVID restructuring. Contributed to 200+ ERP adoptions across SMB and enterprise segments.",
         bullets: [
             "Conducted 1,000+ deep-dive diagnostic sessions with SMB founders and executives using SPIN Selling methodology — mapping operational inefficiencies across CRM, Sales, Inventory, Production, Purchasing, Finance (P&L, cash flow, bank reconciliation), and E-commerce/POS workflows. Enterprise accounts included Belgo Cercas/ArcelorMittal and Caffeine Army/Supercoffee.",
             "Built personal Looker Studio dashboards and Excel scoring models for pipeline management — monitoring stage conversion, velocity, and forecast accuracy using Predictable Revenue and Inside Sales frameworks.",
@@ -507,17 +624,18 @@ const EXPERIENCES = [
         ]
     },
     {
-        role: "Business & Data Analyst",
-        company: "Mandalah",
+        role: "Business & Data Analyst Intern",
+        company: "Mandalah Conscious Innovation Consultancy · São Paulo, Brazil · On-site",
         period: "Apr 2018 - Oct 2018",
         logo: new URL('../assets/logos/mandalah.webp', import.meta.url).href,
         bullets: [
-            "Implemented a global research + BI stack (Qualtrics + Tableau) for an enterprise culture program at Gerdau, impacting 8,000+ employees across 7 countries.",
-            "Designed quant/qual survey instruments, processed multilingual responses, and delivered C-suite insight briefs for Gerdau, Multiplan, and UNHCR/UN."
+            "Implemented a global research + BI stack (Qualtrics + Tableau) for an enterprise culture program at Gerdau, impacting 4,000+ employees across 7 countries. Delivered C-suite insight reports for executive decision support.",
+            "Supported research and market intelligence for Retail/Real Estate (Multiplan), Humanitarian sector (UNHCR/UN) and Telecom.",
+            "Developed scenario analysis and market repositioning for a pioneer Web3/crypto-asset platform."
         ]
     },
     {
-        role: "Business Strategy Consultant",
+        role: "Business Strategy Consultant (REP Insper Program)",
         company: "B.blend (Whirlpool & Ambev)",
         period: "Feb 2017 - Jul 2017",
         logo: new URL('../assets/logos/bblend.webp', import.meta.url).href,
@@ -539,7 +657,7 @@ const EXPERIENCES = [
 
 const LOGOS_MAIN = [
     { name: 'Torus', label: 'Torus Analytics', href: 'https://www.torusanalytics.com/' },
-    { name: 'Omie', src: new URL('../assets/logos/omie.png', import.meta.url).href, size: 'h-10 md:h-12 max-w-[130px] md:max-w-[160px]', href: 'https://omie.com/' },
+    { name: 'Omie', src: omiePng, size: 'h-10 md:h-12 max-w-[130px] md:max-w-[160px]', href: 'https://omie.com/' },
     { name: 'Mandalah', src: new URL('../assets/logos/mandalah.webp', import.meta.url).href, size: 'h-10 md:h-12 max-w-[130px] md:max-w-[160px]', href: 'https://www.mandalah.com/' },
     { name: 'B.blend', src: new URL('../assets/logos/bblend.webp', import.meta.url).href, size: 'h-10 md:h-12 max-w-[130px] md:max-w-[160px]', href: 'https://loja.bblend.com.br/' },
     { name: 'Estudar com Você', src: new URL('../assets/logos/estudar-com-voce.webp', import.meta.url).href, size: 'h-12 md:h-16 max-w-[160px] md:max-w-[200px]', href: 'https://estudar.com.vc/' },
@@ -780,8 +898,8 @@ type SkillItem = {
     icon: React.ReactNode;
     title: string;
     desc: string;
-    detail: string;
     tags: string[];
+    contextItems: { tool: string; context: string }[];
     gradient: string;
 };
 
@@ -809,33 +927,65 @@ const SkillCard = ({ skill, index, expanded, onToggle }: { skill: SkillItem; ind
             </div>
             <h3 className="text-lg font-bold text-white mb-2">{skill.title}</h3>
             <p className="text-zinc-400 text-sm leading-relaxed mb-4">{skill.desc}</p>
-            <div className="flex flex-wrap gap-2 mb-4">
-                {skill.tags.map((tag, t) => {
-                    const logo = TECH_LOGOS[tag];
-                    return (
-                        <span key={t} className="inline-flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[10.5px] font-bold bg-white/5 border border-white/10 text-zinc-300 hover:bg-white/10 transition-colors cursor-default">
-                            {logo ? (
-                                <img src={logo} alt={tag} className="w-3.5 h-3.5 object-contain brightness-0 invert" />
-                            ) : (
-                                <div className="w-1 h-1 rounded-full bg-zinc-500" />
-                            )}
-                            {tag}
-                        </span>
-                    );
-                })}
-            </div>
-            <AnimatePresence>
-                {expanded && (
+
+            {/* Pills ↔ context rows: same slot, crossfade on toggle */}
+            <AnimatePresence mode="wait" initial={false}>
+                {!expanded ? (
                     <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3, ease: 'easeInOut' }}
-                        className="overflow-hidden"
+                        key="pills"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.18 }}
+                        className="flex flex-wrap gap-2"
                     >
-                        <div className="mt-5 pt-5 border-t border-white/8">
-                            <p className="text-zinc-300 text-sm leading-relaxed">{skill.detail}</p>
-                        </div>
+                        {skill.tags.map((tag, t) => {
+                            const logo = TECH_LOGOS[tag];
+                            return (
+                                <span key={t} className="inline-flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[10.5px] font-bold bg-white/5 border border-white/10 text-zinc-300 cursor-default">
+                                    {logo ? (
+                                        <img src={logo} alt={tag} className="w-3.5 h-3.5 object-contain brightness-0 invert" />
+                                    ) : (
+                                        <div className="w-1 h-1 rounded-full bg-zinc-500" />
+                                    )}
+                                    {tag}
+                                </span>
+                            );
+                        })}
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        key="context"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="flex flex-col pt-3 border-t border-white/8"
+                    >
+                        {skill.contextItems.map((item, ci) => {
+                            const logo = TECH_LOGOS[item.tool];
+                            return (
+                                <div
+                                    key={ci}
+                                    className={`flex items-center gap-2.5 py-2 ${
+                                        ci < skill.contextItems.length - 1
+                                            ? 'border-b border-white/[0.05]'
+                                            : ''
+                                    }`}
+                                >
+                                    <div className="w-4 h-4 flex-shrink-0 flex items-center justify-center">
+                                        {logo ? (
+                                            <img src={logo} alt="" className="w-4 h-4 object-contain brightness-0 invert opacity-70" />
+                                        ) : (
+                                            <div className="w-1.5 h-1.5 rounded-full bg-zinc-600" />
+                                        )}
+                                    </div>
+                                    <span className="text-[13px] font-medium text-zinc-200 flex-shrink-0">{item.tool}</span>
+                                    <span className="text-zinc-600 text-[12px] flex-shrink-0">·</span>
+                                    <span className="text-[11.5px] text-zinc-500 leading-snug min-w-0">{item.context}</span>
+                                </div>
+                            );
+                        })}
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -1664,16 +1814,16 @@ export default function PortfolioEduardo() {
                     </div>
 
                     {/* ROW 2: Body text (left) + Credential cards (right) */}
-                    <div className="grid xl:grid-cols-2 gap-12 lg:gap-20 items-start">
+                    <div className="grid xl:grid-cols-2 gap-12 lg:gap-20 items-center">
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, margin: '-80px' }}
                             transition={{ duration: 0.8 }}
-                            className="space-y-5 text-zinc-400 text-base leading-loose"
+                            className="space-y-6 text-zinc-400 text-base lg:text-[19.8px] leading-loose lg:text-right"
                         >
                             <p>
-                                Over 10 years, I went from closing deals at <span className="text-white font-medium">Omie</span> — Brazil's leading cloud ERP — to strategic consulting and now <span className="text-white font-medium">Data Analytics</span>: diagnosing where <span className="text-white font-medium">SaaS, E-Commerce, and Fintech</span> firms lose revenue, and building the infrastructure to capture it.
+                                Over 9 years, I went from closing deals at <span className="text-white font-medium">Omie</span> — Brazil's leading cloud ERP — to strategic consulting and now <span className="text-white font-medium">Data Analytics</span>: diagnosing where <span className="text-white font-medium">SaaS, E-Commerce, and Fintech</span> firms lose revenue, and building the infrastructure to capture it.
                             </p>
                             <p>
                                 Because I've sat in the revenue meetings, I don't just write queries or build pipelines — I understand the <span className="text-white font-medium">business problem behind the ticket</span>. As <span className="text-white font-medium">BI Lead at Torus Analytics</span>, I've architected reporting for dozens of <span className="text-white font-medium">SMB and enterprise</span> operations. Now, through my residency at <span className="text-white font-medium">TripleTen</span>, I'm deepening expertise in <span className="text-white font-medium">ML, predictive modeling, and AI Agents</span>.
@@ -1768,7 +1918,51 @@ export default function PortfolioEduardo() {
                                 </a>
                                 <div className="text-[10px] text-zinc-500 font-bold tracking-wider mb-1 uppercase">CERTIFICATION</div>
                                 <div className="text-sm font-semibold text-white">Lean Six Sigma Green Belt (Falconi)</div>
-                                <div className="text-xs text-zinc-400 italic mt-2">Final-round candidate, Epic Games · English — TOEFL 573 (Fluent)</div>
+                                <div className="text-xs text-zinc-400 italic mt-2">Falconi · Lean Six Sigma Green Belt</div>
+                            </div>
+
+                            {/* Card 5 — Databricks */}
+                            <div className="bg-zinc-950/60 border border-white/10 rounded-2xl p-5 group/edu transition-all hover:border-orange-500/30">
+                                <a
+                                    href="https://www.databricks.com/learn/certification"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-between mb-3 cursor-pointer group/link"
+                                >
+                                    <img
+                                        src={databricksLogo}
+                                        alt="Databricks"
+                                        className="h-6 w-auto object-contain brightness-0 invert opacity-80 group-hover/edu:opacity-100 group-hover/link:scale-105 transition-all"
+                                        width="120" height="24"
+                                        onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }}
+                                    />
+                                    <BookOpen className="w-5 h-5 text-orange-400 hidden group-hover/link:scale-110 transition-transform"/>
+                                </a>
+                                <div className="text-[10px] text-zinc-500 font-bold tracking-wider mb-1 uppercase">CERTIFICATION</div>
+                                <div className="text-sm font-semibold text-white">Databricks Fundamentals & AI Agent Fundamentals</div>
+                                <div className="text-xs text-zinc-400 italic mt-2">Issued April 2026 · Medallion Architecture · AI Agents · MCP & AI Integration · Azure Databricks</div>
+                            </div>
+
+                            {/* Card 6 — Epic Games */}
+                            <div className="bg-zinc-950/60 border border-white/10 rounded-2xl p-5 group/edu transition-all hover:border-zinc-400/30">
+                                <a
+                                    href="https://store.epicgames.com/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-between mb-3 cursor-pointer group/link"
+                                >
+                                    <img
+                                        src={epicGamesLogo}
+                                        alt="Epic Games"
+                                        className="h-6 w-auto object-contain brightness-0 invert opacity-80 group-hover/edu:opacity-100 group-hover/link:scale-105 transition-all"
+                                        width="120" height="24"
+                                        onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }}
+                                    />
+                                    <TrendingUp className="w-5 h-5 text-zinc-300 hidden group-hover/link:scale-110 transition-transform"/>
+                                </a>
+                                <div className="text-[10px] text-zinc-500 font-bold tracking-wider mb-1 uppercase">ACHIEVEMENT</div>
+                                <div className="text-sm font-semibold text-white">Epic Games Data Analyst — Final Round</div>
+                                <div className="text-xs text-zinc-400 italic mt-2">Final round at Epic Games UX Research Data Analyst role, Feb 2026</div>
                             </div>
                         </motion.div>
                     </div>
