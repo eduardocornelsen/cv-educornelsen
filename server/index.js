@@ -84,6 +84,13 @@ app.post('/api/chat', async (req, res) => {
   res.end();
 });
 
+// ─── Resume PDF ───────────────────────────────────────────────────────────────
+app.get('/Eduardo_Cornelsen_Data_Analyst_q2_2026.pdf', (_req, res) => {
+  res.setHeader('Cache-Control', 'public, max-age=3600, must-revalidate');
+  res.setHeader('Content-Disposition', 'inline; filename="Eduardo_Cornelsen_Data_Analyst_q2_2026.pdf"');
+  res.sendFile(join(DIST, 'Eduardo_Cornelsen_Data_Analyst_q2_2026.pdf'));
+});
+
 // ─── Static files ─────────────────────────────────────────────────────────────
 app.use('/assets', express.static(join(DIST, 'assets'), {
   maxAge: '1y', immutable: true, index: false,
