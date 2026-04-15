@@ -1294,7 +1294,7 @@ export default function PortfolioEduardo() {
                                     <Linkedin className="w-4 h-4"/> LinkedIn
                                 </a>
                                 <a 
-                                    href="https://drive.google.com/file/d/1nCXvviqJemRi4Ip9jetuVASz1zX57IGZ/view?usp=sharing" 
+                                    href="/Eduardo_Cornelsen_Data_Analyst_q2_2026.pdf" 
                                     target="_blank" 
                                     rel="noreferrer" 
                                     className="w-full py-3.5 flex items-center justify-center gap-2 bg-white/10 text-white rounded-full text-center font-semibold hover:bg-white/20 transition-colors cursor-pointer border border-white/10"
@@ -1361,7 +1361,7 @@ export default function PortfolioEduardo() {
                                 <Linkedin className="w-5 h-5"/> View LinkedIn
                             </a>
                             <a 
-                                href="https://drive.google.com/file/d/1nCXvviqJemRi4Ip9jetuVASz1zX57IGZ/view?usp=sharing" 
+                                href="/Eduardo_Cornelsen_Data_Analyst_q2_2026.pdf" 
                                 target="_blank" 
                                 className="w-full sm:w-auto px-8 py-4 bg-white/5 text-white font-semibold rounded-full hover:bg-white/10 active:scale-95 transition-all border border-white/10 flex items-center justify-center gap-2 text-base backdrop-blur-sm shadow-xl"
                                 onClick={() => trackEvent('Hero', 'Download Resume', 'Hero CTA')}
