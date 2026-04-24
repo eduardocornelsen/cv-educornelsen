@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
-import { BarChart3, TrendingUp, Users, DollarSign, ShoppingCart, Activity, ArrowUpRight, Target } from 'lucide-react';
+import { BarChart3, TrendingUp, Users, DollarSign, ShoppingCart, Activity, ArrowUpRight, Target, Lightbulb } from 'lucide-react';
 import { trackEvent } from '../utils/analytics';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -16,6 +16,7 @@ const dashboards = [
     ],
     chartColor: 'bg-emerald-500',
     strokeColor: '#10b981',
+    insight: (<>MRR at <strong className="text-white font-semibold">$1.24M</strong> with <strong className="text-white font-semibold">114% net retention</strong> means existing customers expand revenue faster than churn removes it — a structural compounding advantage. Prioritise upsell motions in the high-ACV segment where the <strong className="text-white font-semibold">$42K average contract value</strong> is already trending upward (<strong className="text-white font-semibold">+5.4%</strong>).</>),
     data: [
       { name: 'Jan', value: 4000, target: 2400 },
       { name: 'Feb', value: 3000, target: 1398 },
@@ -37,6 +38,7 @@ const dashboards = [
     ],
     chartColor: 'bg-cyan-500',
     strokeColor: '#06b6d4',
+    insight: (<>Active users grew <strong className="text-white font-semibold">18.2%</strong> while churn fell to <strong className="text-white font-semibold">1.2%</strong> — acquisition quality and retention are improving simultaneously. With LTV at <strong className="text-white font-semibold">$4,250</strong>, the highest-leverage next step is reducing time-to-value to shorten the payback window and unlock earlier expansion revenue.</>),
     data: [
       { name: 'Jan', value: 2000, target: 3000 },
       { name: 'Feb', value: 3500, target: 3200 },
@@ -58,6 +60,7 @@ const dashboards = [
     ],
     chartColor: 'bg-indigo-500',
     strokeColor: '#6366f1',
+    insight: (<>ROAS of <strong className="text-white font-semibold">3.4×</strong> combined with a <strong className="text-white font-semibold">12.4% CAC reduction</strong> signals a more efficient acquisition engine. The <strong className="text-white font-semibold">46% repeat purchase rate</strong> is the real margin driver — increasing repurchase frequency by just <strong className="text-white font-semibold">5 pp</strong> would offset the equivalent of <strong className="text-white font-semibold">~15% of new-customer acquisition spend</strong>.</>),
     data: [
       { name: 'Jan', value: 1200, target: 1000 },
       { name: 'Feb', value: 1800, target: 1200 },
@@ -79,6 +82,7 @@ const dashboards = [
     ],
     chartColor: 'bg-violet-500',
     strokeColor: '#8b5cf6',
+    insight: (<>Cart conversion at <strong className="text-white font-semibold">4.8%</strong> is more than double the <strong className="text-white font-semibold">2–3% industry average</strong>, and AOV gains (<strong className="text-white font-semibold">+12.1% to $124</strong>) confirm bundling mechanics are working. Guard that conversion rate closely as traffic scales: a <strong className="text-white font-semibold">1 pp drop</strong> at current GMV volume (<strong className="text-white font-semibold">$4.8M</strong>) equates to roughly <strong className="text-white font-semibold">$50K in lost monthly revenue</strong>.</>),
     data: [
       { name: 'Jan', value: 5000, target: 4000 },
       { name: 'Feb', value: 4500, target: 4200 },
@@ -100,6 +104,7 @@ const dashboards = [
     ],
     chartColor: 'bg-rose-500',
     strokeColor: '#f43f5e',
+    insight: (<>Pipeline velocity (<strong className="text-white font-semibold">$850K/mo, +15.4%</strong>) and sales cycle compression (<strong className="text-white font-semibold">42 days, −8 days</strong>) are moving in the right direction simultaneously — a rare combination. Each additional <strong className="text-white font-semibold">1 pp of win rate</strong> at current pipeline volume adds approximately <strong className="text-white font-semibold">$30K/mo</strong> in closed revenue with no incremental headcount.</>),
     data: [
       { name: 'Jan', value: 3000, target: 3500 },
       { name: 'Feb', value: 3200, target: 3600 },
@@ -334,6 +339,20 @@ export default function DashboardShowcase({
                 </motion.div>
               </motion.div>
             </div>
+
+            {/* Insight */}
+            <motion.div
+              key={`insight-${activeTab}`}
+              variants={itemVariants}
+              className="flex gap-3 rounded-2xl border border-white/5 border-l-[3px] bg-zinc-950/50 px-5 py-4"
+              style={{ borderLeftColor: activeDashboard.strokeColor }}
+            >
+              <Lightbulb className="w-4 h-4 mt-0.5 shrink-0" style={{ color: activeDashboard.strokeColor }} />
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: activeDashboard.strokeColor }}>Main Insight</div>
+                <p className="text-sm text-zinc-300 leading-relaxed">{activeDashboard.insight}</p>
+              </div>
+            </motion.div>
           </motion.div>
         </motion.div>
       </div>
