@@ -6,7 +6,7 @@ import {
 } from 'recharts';
 import { trackEvent } from '../utils/analytics';
 import * as d3 from 'd3';
-import { TrendingUp, TrendingDown, Minus, Activity, Network, BarChart2, Table2, Zap, GitMerge } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, Activity, Network, BarChart2, Table2, Zap, GitMerge, Lightbulb, TriangleAlert } from 'lucide-react';
 
 // ─── Shared colours ────────────────────────────────────────────────────────────
 const EMERALD = '#10b981';
@@ -253,6 +253,7 @@ declare global { interface Window { Plotly: any } }
 function PlotlySurface() {
     const divRef = useRef<HTMLDivElement>(null);
     const [loaded, setLoaded] = useState(false);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
         function init() {
@@ -301,8 +302,25 @@ function PlotlySurface() {
         const s = document.createElement('script');
         s.src = 'https://cdn.plot.ly/plotly-3.0.1.min.js';
         s.onload = init;
+        s.onerror = () => setError(true);
         document.head.appendChild(s);
     }, []);
+
+    if (error) {
+        return (
+            <div className="absolute inset-0 flex items-center justify-center">
+                <div className="flex flex-col items-center gap-3 text-center px-6">
+                    <span className="text-2xl">⚠️</span>
+                    <span className="text-zinc-400 text-sm font-semibold">3D surface could not load</span>
+                    <span className="text-zinc-600 text-xs">Plotly CDN script was blocked — check CSP or network.</span>
+                    <button
+                        onClick={() => { setError(false); window.location.reload(); }}
+                        className="mt-1 text-xs px-3 py-1.5 rounded-full border border-violet-500/40 text-violet-400 hover:bg-violet-500/10 transition-colors"
+                    >Retry</button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="relative w-full h-full">
@@ -323,6 +341,7 @@ function PlotlySurface() {
 function PlotlySankey() {
     const divRef = useRef<HTMLDivElement>(null);
     const [loaded, setLoaded] = useState(false);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
         const init = () => {
@@ -368,8 +387,25 @@ function PlotlySankey() {
         const s = document.createElement('script');
         s.src = 'https://cdn.plot.ly/plotly-3.0.1.min.js';
         s.onload = init;
+        s.onerror = () => setError(true);
         document.head.appendChild(s);
     }, []);
+
+    if (error) {
+        return (
+            <div className="absolute inset-0 flex items-center justify-center">
+                <div className="flex flex-col items-center gap-3 text-center px-6">
+                    <span className="text-2xl">⚠️</span>
+                    <span className="text-zinc-400 text-sm font-semibold">Flow diagram could not load</span>
+                    <span className="text-zinc-600 text-xs">Plotly CDN script was blocked — check CSP or network.</span>
+                    <button
+                        onClick={() => { setError(false); window.location.reload(); }}
+                        className="mt-1 text-xs px-3 py-1.5 rounded-full border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 transition-colors"
+                    >Retry</button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="relative w-full h-full min-h-[380px]">
@@ -392,6 +428,39 @@ function heatColor(v: number, min: number, max: number) {
     if (t < 0.33) return `rgba(239,68,68,${0.15 + t * 0.5})`;
     if (t < 0.66) return `rgba(245,158,11,${0.15 + t * 0.4})`;
     return `rgba(16,185,129,${0.15 + t * 0.5})`;
+}
+
+// ─── Storytelling helpers ─────────────────────────────────────────────────────────
+function MainInsight({ color = EMERALD, children }: { color?: string; children: React.ReactNode }) {
+    return (
+        <div
+            className="mt-4 flex gap-3 rounded-2xl border border-white/5 border-l-[3px] bg-zinc-900/80 px-5 py-4"
+            style={{ borderLeftColor: color }}
+        >
+            <Lightbulb className="w-4 h-4 mt-0.5 shrink-0" style={{ color }} />
+            <div>
+                <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color }}>Main Insight</div>
+                <p className="text-sm text-zinc-300 leading-relaxed">{children}</p>
+            </div>
+        </div>
+    );
+}
+
+function MetricWarning() {
+    return (
+        <div className="flex gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 px-4 py-3 mt-3">
+            <TriangleAlert className="w-4 h-4 mt-0.5 shrink-0 text-amber-400" />
+            <div>
+                <div className="text-[10px] font-bold uppercase tracking-widest text-amber-400 mb-1">Why Accuracy and not F1?</div>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                    This dataset is class-balanced (~50/50 split), making accuracy a reliable, stakeholder-friendly metric.
+                    F1 is preferred for imbalanced datasets — e.g. fraud detection where the positive class is &lt;1% of samples.
+                    Sanity check: Model A achieves a 93.1 F1 score, confirming accuracy is not misleading here.
+                    If the class distribution shifts in production, switch the primary metric to F1 or AUC-ROC.
+                </p>
+            </div>
+        </div>
+    );
 }
 
 // ─── Main Component ──────────────────────────────────────────────────────────────
@@ -595,6 +664,9 @@ export default function DataVizShowcase() {
                                     </ResponsiveContainer>
                                 </div>
                             </div>
+                            <MainInsight color={EMERALD}>
+                                Revenue grew <strong className="text-white font-semibold">30.9%</strong> over the trailing 12 months (<strong className="text-white font-semibold">$420K → $550K</strong>), with the US closing <strong className="text-white font-semibold">63 deals in Q4</strong> — the highest single-quarter volume across all regions. LATAM shows the steepest growth trajectory with the most headroom: prioritise pipeline expansion there before the next target-setting cycle.
+                            </MainInsight>
                         </motion.div>
                     )}
 
@@ -603,8 +675,8 @@ export default function DataVizShowcase() {
                         <motion.div key="network"
                             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }}
                             transition={{ duration: 0.3 }}
-                            className="bg-zinc-900 border border-white/5 rounded-3xl overflow-hidden"
                         >
+                            <div className="bg-zinc-900 border border-white/5 rounded-3xl overflow-hidden">
                             <div className="p-6 border-b border-white/5 flex items-center justify-between">
                                 <div>
                                     <div className="text-sm font-bold text-white">AI Data Flow Network</div>
@@ -622,6 +694,10 @@ export default function DataVizShowcase() {
                             <div ref={netRef} className="w-full" style={{ height: 420 }}>
                                 <ForceNetwork width={netSize.w} height={netSize.h} />
                             </div>
+                            </div>
+                            <MainInsight color={CYAN}>
+                                The <strong className="text-white font-semibold">ML Engine</strong> is the single highest-centrality hub: every revenue-generating output stream — Forecasts, Dashboard, Alerts, and Revenue — routes through it. A latency spike or failure here cascades to <strong className="text-white font-semibold">100% of downstream outputs</strong>. Make it the top candidate for <strong className="text-white font-semibold">redundancy investment</strong> and dedicated SLA monitoring.
+                            </MainInsight>
                         </motion.div>
                     )}
 
@@ -632,12 +708,12 @@ export default function DataVizShowcase() {
                             transition={{ duration: 0.3 }}
                         >
                             <div className="grid md:grid-cols-3 gap-4">
-                                <div className="md:col-span-2 bg-zinc-900 border border-white/5 rounded-3xl overflow-hidden">
-                                    <div className="p-5 border-b border-white/5">
+                                <div className="md:col-span-2 bg-zinc-900 border border-white/5 rounded-3xl overflow-hidden flex flex-col">
+                                    <div className="p-5 border-b border-white/5 shrink-0">
                                         <div className="text-sm font-bold text-white">3D Predictive Surface — ML Model Comparison</div>
                                         <div className="text-xs text-zinc-500 mt-0.5">Powered by Plotly.js · Rotate &amp; zoom the surface</div>
                                     </div>
-                                    <div style={{ height: 380 }}>
+                                    <div className="flex-1 min-h-0" style={{ minHeight: 320 }}>
                                         <PlotlySurface />
                                     </div>
                                 </div>
@@ -675,6 +751,10 @@ export default function DataVizShowcase() {
                                     </div>
                                 </div>
                             </div>
+                            <MetricWarning />
+                            <MainInsight color={VIOLET}>
+                                Model A outperforms Model B by <strong className="text-white font-semibold">3.5 pp</strong> (<strong className="text-white font-semibold">94.7% vs 91.2%</strong>) at the same <strong className="text-white font-semibold">18ms P99</strong> inference time. On a 14M-row workload that gap equates to <strong className="text-white font-semibold">~490K fewer misclassifications per batch</strong>. Promote Model A to primary production and keep Model B as a shadow pipeline to validate future retraining runs.
+                            </MainInsight>
                         </motion.div>
                     )}
 
@@ -683,8 +763,8 @@ export default function DataVizShowcase() {
                         <motion.div key="table"
                             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }}
                             transition={{ duration: 0.3 }}
-                            className="bg-zinc-900 border border-white/5 rounded-3xl overflow-hidden"
                         >
+                            <div className="bg-zinc-900 border border-white/5 rounded-3xl overflow-hidden">
                             <div className="p-5 border-b border-white/5 flex items-center justify-between">
                                 <div>
                                     <div className="text-sm font-bold text-white">Revenue Intelligence Table</div>
@@ -757,6 +837,10 @@ export default function DataVizShowcase() {
                                 <span>Best region: <strong className="text-white">{TABLE_DATA.sort((a, b) => b.q4 - a.q4)[0].region}</strong></span>
                                 <span className="ml-auto">Click headers to sort • All values in $K</span>
                             </div>
+                            </div>
+                            <MainInsight color={AMBER}>
+                                <strong className="text-white font-semibold">Asia</strong> leads all regions in Q4 revenue and YoY growth — the two metrics that matter most for next-cycle budget allocation. Regions currently flagged as <strong className="text-white font-semibold">"Falling"</strong> are the highest priority for intervention: use the <strong className="text-white font-semibold">8-quarter sparkline</strong> to distinguish a temporary dip from a sustained structural reversal before committing resources.
+                            </MainInsight>
                         </motion.div>
                     )}
 
@@ -765,8 +849,8 @@ export default function DataVizShowcase() {
                         <motion.div key="stream"
                             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }}
                             transition={{ duration: 0.35 }}
-                            className="p-6 grid grid-cols-1 lg:grid-cols-4 gap-6 h-full"
                         >
+                        <div className="p-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
                             {/* Live metric cards */}
                             <div className="flex flex-col gap-4">
                                 <div className="flex items-center gap-2 mb-1">
@@ -853,6 +937,12 @@ export default function DataVizShowcase() {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div className="px-6 pb-6">
+                            <MainInsight color={ROSE}>
+                                The anomaly score averages <strong className="text-white font-semibold">~28%</strong> across the rolling 60-point window with periodic spikes <strong className="text-white font-semibold">above 40%</strong>. Recurring spikes signal <strong className="text-white font-semibold">systematic input drift</strong> — not random noise. Define an operational rule: if the anomaly score exceeds <strong className="text-white font-semibold">35% for three or more consecutive windows</strong>, trigger a model retraining review rather than waiting for a manual alert.
+                            </MainInsight>
+                        </div>
                         </motion.div>
                     )}
 
@@ -861,8 +951,8 @@ export default function DataVizShowcase() {
                         <motion.div key="sankey"
                             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }}
                             transition={{ duration: 0.35 }}
-                            className="p-6 grid grid-cols-1 lg:grid-cols-4 gap-6 h-full"
                         >
+                        <div className="p-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
                             {/* Info sidebar */}
                             <div className="flex flex-col gap-4">
                                 <div>
@@ -889,6 +979,12 @@ export default function DataVizShowcase() {
                             <div className="lg:col-span-3">
                                 <PlotlySankey />
                             </div>
+                        </div>
+                        <div className="px-6 pb-6">
+                            <MainInsight color={EMERALD}>
+                                <strong className="text-white font-semibold">CRM and Marketing</strong> together feed <strong className="text-white font-semibold">~80% of the ML Engine's input volume</strong> — a CRM ingestion failure would halt the majority of revenue-intelligence output. Adding a <strong className="text-white font-semibold">data-quality circuit-breaker</strong> on the CRM ingestion layer is the single highest-ROI reliability investment available in this architecture.
+                            </MainInsight>
+                        </div>
                         </motion.div>
                     )}
 
