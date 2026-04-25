@@ -4,6 +4,11 @@
 
 # Eduardo Cornelsen — Portfolio + AI Chatbot
 
+[![Vitest](https://github.com/eduardocornelsen/cv-educornelsen/actions/workflows/vitest.yml/badge.svg)](https://github.com/eduardocornelsen/cv-educornelsen/actions/workflows/vitest.yml)
+[![E2E Tests](https://github.com/eduardocornelsen/cv-educornelsen/actions/workflows/playwright.yml/badge.svg)](https://github.com/eduardocornelsen/cv-educornelsen/actions/workflows/playwright.yml)
+[![Health Check](https://github.com/eduardocornelsen/cv-educornelsen/actions/workflows/health-check.yml/badge.svg)](https://github.com/eduardocornelsen/cv-educornelsen/actions/workflows/health-check.yml)
+[![Deploy Status](https://github.com/eduardocornelsen/cv-educornelsen/actions/workflows/deploy.yml/badge.svg)](https://github.com/eduardocornelsen/cv-educornelsen/actions/workflows/deploy.yml)
+
 > Engineered a production-grade personal portfolio with a streaming AI chatbot, containerized via Docker, and deployed through a zero-touch CI/CD pipeline on Google Cloud Run — demonstrating full-stack ownership, LLMOps observability, and 4-layer prompt-injection security at $0/month infrastructure cost.
 
 **Live site:** [eduardocornelsen.com](https://eduardocornelsen.com)
@@ -502,6 +507,62 @@ A: The portfolio sections are in `src/components/PortfolioEduardo.tsx`. Each pro
 
 **Q: Is this safe to make public?**
 A: Yes, as long as `.env` is never committed. Double-check with `git status` — `.env` should never appear as a file to be committed. The `.gitignore` file prevents this, but always verify.
+
+---
+
+## Testing
+
+This project maintains a multi-layer testing strategy across unit, E2E, and synthetic monitoring.
+
+### Unit / Component Tests — Vitest (`vitest.yml`)
+
+Runs on every push and PR to `main`.
+
+- Tests pure utility functions, hooks, and component logic in isolation using **jsdom**
+- Covers `src/__tests__/` — chatbot contract tests, analytics helpers, and component snapshots
+- Run locally: `npm test` (watch mode) or `npm test -- --run` (single pass)
+
+### E2E Tests — Playwright (`playwright.yml`)
+
+Runs on every push and PR to `main`, against a production build.
+
+| Spec | What it covers |
+|---|---|
+| `layout_links.spec.ts` | Hero visibility, nav scroll anchors, external link attributes, footer render |
+| `chatbot.spec.ts` | Chatbot open/close, message send, streaming response, rate-limit UI |
+| `dashboard.spec.ts` | Data viz section render, Plotly CDN load, tab navigation |
+| `dataviz.spec.ts` | D3 / Recharts chart render, tooltip interactions, responsive layout |
+| `csp.spec.ts` | Content Security Policy headers, no blocked inline scripts |
+
+Run locally: `npm run test:e2e` (headless) or `npm run test:e2e:ui` (interactive)
+
+### Daily Health Check — Synthetic Monitoring (`health-check.yml`)
+
+Runs every day at **09:00 UTC** (and can be triggered manually via `workflow_dispatch`).
+
+- Runs the full Playwright E2E suite against the **live production URL** (`https://eduardocornelsen.com`)
+- Catches regressions caused by Cloud Run cold starts, upstream API changes, or broken deployments **before users notice**
+- Reports are uploaded as GitHub Actions artifacts and retained for 14 days
+- The workflow fails fast — any broken test page triggers a workflow failure and GitHub notification
+
+### GA4 Test Traffic Filtering
+
+All Google Analytics 4 network requests are **blocked during every Playwright test run**.
+
+Implemented via `e2e/global.setup.ts` — a Playwright base fixture with `auto: true` that calls `page.route()` to abort the following patterns before any test interaction:
+
+```
+**/*.google-analytics.com/**
+**/analytics.google.com/**
+**/gtag/js**
+**/gtag**
+```
+
+**Why this matters:**
+- Prevents test sessions from appearing in production GA4 as real user traffic
+- Eliminates false bounce rates and skewed conversion data from CI runs
+- Removes external beacon latency from test execution (especially relevant on the daily health-check cron)
+- Ensures GA4 data in the dashboard reflects only genuine user behaviour
 
 ---
 

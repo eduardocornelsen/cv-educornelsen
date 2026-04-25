@@ -59,8 +59,15 @@ GitHub push → Actions: build Docker → push to Artifact Registry
 ### Dev Experience
 - `npm run dev` — Vite dev server with a built-in `/api/chat` plugin; no separate Express process needed locally
 - `npm run dev:server` — standalone Express for isolated backend testing
-- `npm run test` — Vitest unit suite
+- `npm test` — Vitest unit suite (watch mode)
+- `npm run test:e2e` — Playwright E2E tests (5 spec files, headless Chromium)
 - `npm run test:contract` — chatbot contract tests (API stability checks)
+
+### Testing & Quality
+- **Vitest unit tests** — utility functions, chatbot hooks, analytics helpers tested in isolation via jsdom
+- **Playwright E2E tests** — 5 spec files covering layout, chatbot streaming, data viz, CSP headers, and external link attributes
+- **Daily automated synthetic monitoring** — GitHub Actions cron (`health-check.yml`) runs the full E2E suite against the live production URL (`https://eduardocornelsen.com`) every day at 09:00 UTC, catching Cloud Run regressions before users notice
+- **GA4 test traffic filtering** — all Google Analytics beacon requests (`*.google-analytics.com`, `analytics.google.com`, `gtag/js`) are aborted during every Playwright run via `e2e/global.setup.ts`, preventing test sessions from polluting production analytics funnels
 
 ---
 

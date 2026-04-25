@@ -30,6 +30,16 @@ app.use((_req, res, next) => {
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  res.setHeader('Content-Security-Policy', [
+    "default-src 'self'",
+    "script-src 'self' https://www.googletagmanager.com https://cdnjs.cloudflare.com https://cdn.plot.ly",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' https://fonts.gstatic.com",
+    "img-src 'self' data: https:",
+    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://us.cloud.langfuse.com https://cdn.plot.ly",
+    "frame-src 'none'",
+    "object-src 'none'",
+  ].join('; '));
   next();
 });
 
@@ -87,7 +97,7 @@ app.post('/api/chat', async (req, res) => {
 // ─── Resume PDF ───────────────────────────────────────────────────────────────
 app.get('/Eduardo_Cornelsen_Data_Analyst_q2_2026.pdf', (_req, res) => {
   res.setHeader('Cache-Control', 'public, max-age=3600, must-revalidate');
-  res.setHeader('Content-Disposition', 'inline; filename="Eduardo_Cornelsen_Data_Analyst_q2_2026.pdf"');
+  res.setHeader('Content-Disposition', 'attachment; filename="Eduardo_Cornelsen_Data_Analyst_q2_2026.pdf"');
   res.sendFile(join(DIST, 'Eduardo_Cornelsen_Data_Analyst_q2_2026.pdf'));
 });
 
