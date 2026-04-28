@@ -546,13 +546,13 @@ const PROJECTS: ProjectData[] = [
     {
         title: "Portfolio Infrastructure & AI Chatbot",
         outcome: "Cloud Run · 4-Layer Security · LLMOps",
-        desc: "Built the production infrastructure behind this site: a streaming AI chatbot (Gemini + SSE), containerized via multi-stage Docker, deployed via GitHub Actions to Google Cloud Run, with LangFuse tracing every conversation for cost, latency, and jailbreak detection. Zero-cost at idle, zero-touch deploys.",
+        desc: "Built the production infrastructure behind this site: a streaming AI chatbot (Gemini + SSE), containerized via multi-stage Docker, deployed via GitHub Actions to Google Cloud Run with LangFuse tracing every conversation for cost, latency, and jailbreak detection. Includes Vitest unit tests, Playwright E2E tests, daily automated synthetic monitoring via GitHub Actions cron, and GA4 test traffic filtering to keep analytics clean. Zero-cost at idle, zero-touch deploys.",
         media: [
             { type: 'image', src: new URL('../assets/projects/portfolio-infra/lp.webp', import.meta.url).href },
             { type: 'image', src: new URL('../assets/projects/portfolio-infra/lang-fuse.webp', import.meta.url).href },
         ],
         gradient: "from-slate-500 to-zinc-600",
-        tags: ["Google Cloud Run", "Docker", "GitHub Actions", "Gemini", "LangFuse", "React", "TypeScript"],
+        tags: ["Google Cloud Run", "Docker", "GitHub Actions", "Gemini", "LangFuse", "React", "TypeScript", "Vitest", "Playwright"],
         github: "https://github.com/eduardocornelsen/cv-educornelsen",
         liveUrl: "https://eduardocornelsen.com",
         readme: portfolioInfraReadme,
