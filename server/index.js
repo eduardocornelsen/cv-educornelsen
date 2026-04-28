@@ -33,10 +33,11 @@ app.use((_req, res, next) => {
   res.setHeader('Content-Security-Policy', [
     "default-src 'self'",
     "script-src 'self' https://www.googletagmanager.com https://cdnjs.cloudflare.com https://cdn.plot.ly",
+    "script-src-attr 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: https:",
-    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://us.cloud.langfuse.com https://cdn.plot.ly",
+    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://stats.g.doubleclick.net https://us.cloud.langfuse.com https://cdn.plot.ly",
     "frame-src 'none'",
     "object-src 'none'",
   ].join('; '));
