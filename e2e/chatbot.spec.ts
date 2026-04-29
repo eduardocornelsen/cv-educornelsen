@@ -5,8 +5,8 @@ test.describe('AI Chatbot component', () => {
   test.setTimeout(60_000);
 
   test.beforeEach(async ({ page }) => {
-    // Navigate to homepage before each test
     await page.goto('/');
+    await page.waitForLoadState('networkidle');
   });
 
   test('Verify chatbot toggle button exists', async ({ page }) => {
