@@ -5,7 +5,6 @@
 # Eduardo Cornelsen — Portfolio + AI Chatbot
 
 [![Vitest](https://github.com/eduardocornelsen/cv-educornelsen/actions/workflows/vitest.yml/badge.svg)](https://github.com/eduardocornelsen/cv-educornelsen/actions/workflows/vitest.yml)
-[![E2E Tests](https://github.com/eduardocornelsen/cv-educornelsen/actions/workflows/playwright.yml/badge.svg)](https://github.com/eduardocornelsen/cv-educornelsen/actions/workflows/playwright.yml)
 [![Health Check](https://github.com/eduardocornelsen/cv-educornelsen/actions/workflows/health-check.yml/badge.svg)](https://github.com/eduardocornelsen/cv-educornelsen/actions/workflows/health-check.yml)
 
 > Engineered a production-grade personal portfolio with a streaming AI chatbot, containerized via Docker, and deployed through a zero-touch CI/CD pipeline on Google Cloud Run — demonstrating full-stack ownership, LLMOps observability, and 4-layer prompt-injection security at $0/month infrastructure cost.
