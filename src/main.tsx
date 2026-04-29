@@ -11,7 +11,7 @@ const AnalyticsWrapper = () => {
 
   useEffect(() => {
     // Initializing GA
-    initGA('G-REDACTED');
+    initGA(import.meta.env.VITE_GA_ID);
   }, []);
 
   useEffect(() => {
