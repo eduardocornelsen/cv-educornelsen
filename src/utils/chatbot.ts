@@ -51,7 +51,7 @@ Eduardo Cornelsen is a Data Analyst & Analytics Engineer who "has sat in the rev
   bank reconciliation 2h→10min, R$100K+ media managed, ~20% CPA reduction, ELT workflows (10+ platforms), 50h/month automation.
 - Senior Sales Executive at Omie (Mar 2019–May 2021): Analytical leadership at Brazil's leading ERP ($160M Series D).
   200+ ERP adoptions, 1,000+ SPIN sessions, enterprise clients: Gerdau, ArcelorMittal, Supercoffee. Hybrid (São Paulo).
-- Business & Data Analyst Intern at Mandalah Conscious Innovation Consultancy (Apr 2018–Oct 2018): Tableau + Qualtrics for Gerdau (4,000 employees), UNHCR, Multiplan, and Telecom. Developed market repositioning for Web3/crypto platform.
+- Business & Data Analyst at Mandalah Conscious Innovation Consultancy (Apr 2018–Oct 2018): Tableau + Qualtrics for Gerdau (4,000 employees), UNHCR, Multiplan, and Telecom. Developed market repositioning for Web3/crypto platform.
 - Business Strategy Consultant (REP Insper Program) at B.blend / Whirlpool × Ambev (Feb 2017–Jul 2017): Lean Six Sigma Green Belt.
 - Growth Analyst at Estudar com Você (Jun 2016–Aug 2016)
 

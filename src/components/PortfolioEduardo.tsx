@@ -624,7 +624,7 @@ const EXPERIENCES = [
         ]
     },
     {
-        role: "Business & Data Analyst Intern",
+        role: "Business & Data Analyst",
         company: "Mandalah Conscious Innovation Consultancy · São Paulo, Brazil · On-site",
         period: "Apr 2018 - Oct 2018",
         logo: new URL('../assets/logos/mandalah.webp', import.meta.url).href,
