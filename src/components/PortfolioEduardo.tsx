@@ -640,7 +640,7 @@ const EXPERIENCES = [
         period: "Feb 2017 - Jul 2017",
         logo: new URL('../assets/logos/bblend.webp', import.meta.url).href,
         bullets: [
-            "Applied PDCA, Ishikawa root-cause analysis, and McKinsey problem-solving methodology to diagnose conversion funnel friction and prioritize high-impact fixes.",
+            "Applied PDCA, Ishikawa root-cause analysis, and structured problem-solving frameworks to diagnose conversion funnel friction and prioritize high-impact fixes.",
             "Awarded Falconi Lean Six Sigma Green Belt for presenting ROI-oriented, data-driven recommendations to the B.blend executive board."
         ]
     },
