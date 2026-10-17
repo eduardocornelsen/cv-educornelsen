@@ -34,14 +34,17 @@ export function Chatbot({ navVisible = false }: { navVisible?: boolean }) {
         title="Ask Eduardo's AI"
         animate={{ bottom }}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        aria-label="Ask Eduardo's AI assistant"
-        className="fixed right-5 z-50 flex items-center justify-center cursor-pointer rounded-full bg-surface text-ink border border-line-strong shadow-md hover:border-accent hover:text-accent transition-colors"
+        className="terminal-glow fixed right-6 z-50 flex items-center justify-center cursor-pointer"
         style={{
-          width: 52,
-          height: 52,
+          width: 60,
+          height: 60,
+          background: '#050505',
+          border: '1px solid #00FFFF',
+          borderRadius: 4,
           fontFamily: 'var(--font-mono)',
-          fontSize: 16,
-          marginBottom: 'env(safe-area-inset-bottom, 0px)',
+          fontSize: 18,
+          color: '#00FFFF',
+          letterSpacing: 1,
         }}
       >
         {'>_'}

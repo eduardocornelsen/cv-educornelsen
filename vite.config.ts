@@ -97,6 +97,7 @@ export default defineConfig(({ mode }) => {
         output: {
           manualChunks: {
             'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+            'vendor-three': ['three', '@react-three/fiber', '@react-three/drei'],
             'vendor-motion': ['motion'],
             'vendor-charts': ['recharts', 'd3'],
             'vendor-markdown': ['react-markdown', 'remark-gfm'],

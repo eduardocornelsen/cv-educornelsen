@@ -8,7 +8,7 @@ test.describe('Layout and Links', () => {
 
   test('Verify Hero section visibility', async ({ page }) => {
     await expect(page.locator('h1').filter({ hasText: 'Eduardo' })).toBeVisible();
-    await expect(page.getByText('Data Analyst & Analytics Engineer').first()).toBeVisible();
+    await expect(page.getByText('Most analytics teams build dashboards.')).toBeVisible();
   });
 
   test('Verify main navigation links scroll to correct sections', async ({ page }) => {
