@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, lazy, Suspense } from 'react';
-import { motion, AnimatePresence, useScroll, useSpring, useTransform, useMotionValue, useAnimationFrame } from 'motion/react';
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useAnimationFrame } from 'motion/react';
 import { trackEvent } from '../utils/analytics';
 import { Chatbot } from './chatbot';
 import ReactMarkdown from 'react-markdown';
@@ -407,43 +407,56 @@ function TorusFallback() {
     );
 }
 
-export type MediaItem = { type: 'image' | 'video' | 'html' | 'pdf'; src: string; contain?: boolean; };
+export type MediaItem = { type: 'image' | 'video' | 'html' | 'pdf'; src: string; contain?: boolean; poster?: string; };
 
-// Only adds the <video> element to the DOM once the carousel scrolls into view,
-// preventing both MP4 assets (~10 MB combined) from downloading on initial page load.
-function LazyVideo({ src, contain }: { src: string; contain?: boolean }) {
-    const ref = useRef<HTMLDivElement>(null);
-    const [active, setActive] = useState(false);
+// Card videos play only while someone is looking: on hover/focus with a mouse,
+// or while at least half of the card is on screen on touch devices. Nothing is
+// downloaded until then (preload="none"), and reduced-motion users see the poster.
+function ProjectVideo({ src, poster, contain, mode }: { src: string; poster?: string; contain?: boolean; mode: 'card' | 'modal' }) {
+    const ref = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
-        const el = ref.current;
-        if (!el) return;
+        const video = ref.current;
+        if (!video) return;
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduced) return;
+        const play = () => { video.play().catch(() => {}); };
+        const pause = () => video.pause();
+
+        const hoverCapable = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        if (mode === 'card' && hoverCapable) {
+            const card = video.closest('[data-card]') ?? video;
+            card.addEventListener('mouseenter', play);
+            card.addEventListener('mouseleave', pause);
+            card.addEventListener('focusin', play);
+            card.addEventListener('focusout', pause);
+            return () => {
+                card.removeEventListener('mouseenter', play);
+                card.removeEventListener('mouseleave', pause);
+                card.removeEventListener('focusin', play);
+                card.removeEventListener('focusout', pause);
+            };
+        }
         const obs = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setActive(true);
-                    obs.disconnect();
-                }
-            },
-            { rootMargin: '400px' }
+            ([entry]) => (entry.isIntersecting ? play() : pause()),
+            { threshold: 0.5 }
         );
-        obs.observe(el);
+        obs.observe(video);
         return () => obs.disconnect();
-    }, []);
+    }, [mode]);
 
     return (
-        <div ref={ref} className={`w-full h-full ${contain ? 'bg-zinc-950' : 'bg-zinc-900'}`}>
-            {active && (
-                <video
-                    src={src}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className={`w-full h-full ${contain ? 'object-contain' : 'object-cover'}`}
-                />
-            )}
-        </div>
+        <video
+            ref={ref}
+            src={src}
+            poster={poster}
+            preload="none"
+            loop
+            muted
+            playsInline
+            aria-hidden="true"
+            className={`w-full h-full ${contain ? 'object-contain bg-zinc-950' : 'object-cover bg-zinc-900'}`}
+        />
     );
 }
 
@@ -465,10 +478,11 @@ export type ProjectData = {
 
 const PROJECTS: ProjectData[] = [
     {
-        title: "Analista IA — Governed AI Analyst",
+        title: "Analista IA: Governed AI Analyst",
         outcome: "Live on a Real Store · Code Private",
         desc: "Store owners ask in plain language and get contribution margin, P&L and channel numbers from tested dbt marts. The pipeline computes and the AI only reads: read-only SQL with an allowlist, row-level security per tenant, a semantic schema that fails CI on drift, and a checker that rejects any number not in the query results. The analyst runs in production on a specialty-coffee store; the multi-source ingestion pipeline is built and tested, not yet scheduled.",
         media: [
+            { type: 'video', src: new URL('../assets/projects/analista-ia/demo.mp4', import.meta.url).href, poster: new URL('../assets/projects/analista-ia/demo-poster.webp', import.meta.url).href },
             { type: 'image', src: new URL('../assets/projects/analista-ia/demo.webp', import.meta.url).href },
             { type: 'image', src: new URL('../assets/projects/analista-ia/home.webp', import.meta.url).href },
         ],
@@ -482,10 +496,11 @@ const PROJECTS: ProjectData[] = [
         },
     },
     {
-        title: "TorraHub & RodeAqui — E-commerce + ERP with Built-in Analytics",
+        title: "TorraHub & RodeAqui: E-commerce + ERP with Built-in Analytics",
         outcome: "Live Store · Mercado Pago Certified · 18 dbt Models",
         desc: "A multi-tenant SaaS I built for specialty-coffee brands (TorraHub) and small online stores (RodeAqui): storefront, subscriptions, inventory and about 50 admin screens, including contribution margin by channel, monthly P&L, cash projection, moving-average cost and roast planning. Next.js on Postgres/Supabase with row-level security; 18 dbt models generated from one semantic schema, with a CI test against drift. Sites and demos are in Portuguese.",
         media: [
+            { type: 'video', src: new URL('../assets/projects/torrahub/demo.mp4', import.meta.url).href, poster: new URL('../assets/projects/torrahub/demo-poster.webp', import.meta.url).href },
             { type: 'image', src: new URL('../assets/projects/torrahub/painel-resumo.webp', import.meta.url).href },
             { type: 'image', src: new URL('../assets/projects/torrahub/analista.webp', import.meta.url).href },
             { type: 'image', src: new URL('../assets/projects/torrahub/diretoria.webp', import.meta.url).href },
@@ -511,9 +526,9 @@ const PROJECTS: ProjectData[] = [
     {
         title: "Full-Funnel AI Analytics Platform",
         outcome: "Zero Metric Drift · 4 Attribution Models",
-        desc: "Ask an AI for ROAS and you get a different number every time. I built a dbt pipeline (real Olist e-commerce orders + synthetic Google/Meta/GA4/CRM data) where every metric is defined once, pre-computed into a tested golden layer, and read — never recomputed — by AI clients over MCP and by dashboards. CI fails if any number drifts or goes stale.",
+        desc: "Ask an AI for ROAS and you get a different number every time. I built a dbt pipeline (real Olist e-commerce orders + synthetic Google/Meta/GA4/CRM data) where every metric is defined once, pre-computed into a tested golden layer, and read by AI clients over MCP and by dashboards without being recomputed. CI fails if any number drifts or goes stale.",
         media: [
-            { type: 'video', src: new URL('../assets/projects/full-funnel-ai-analytics/open-query.mp4', import.meta.url).href, contain: true },
+            { type: 'video', src: new URL('../assets/projects/full-funnel-ai-analytics/open-query.mp4', import.meta.url).href, contain: true, poster: new URL('../assets/projects/full-funnel-ai-analytics/open-query-poster.webp', import.meta.url).href },
             { type: 'image', src: new URL('../assets/projects/full-funnel-ai-analytics/full_funnel_architecture_flow.webp', import.meta.url).href },
             { type: 'html', src: new URL('../assets/projects/full-funnel-ai-analytics/full_funnel_marketing_dashboard.html', import.meta.url).href },
             { type: 'html', src: new URL('../assets/projects/full-funnel-ai-analytics/attribution_dashboard.html', import.meta.url).href },
@@ -530,7 +545,7 @@ const PROJECTS: ProjectData[] = [
         readme: fullFunnelReadme,
         images: {
             'architecture.webp': new URL('../assets/projects/full-funnel-ai-analytics/full_funnel_architecture_flow.webp', import.meta.url).href,
-            'open-query.png': new URL('../assets/projects/full-funnel-ai-analytics/open-query.png', import.meta.url).href,
+            'open-query.png': new URL('../assets/projects/full-funnel-ai-analytics/open-query.webp', import.meta.url).href,
             'dashboard.webp': new URL('../assets/projects/full-funnel-ai-analytics/marketing-dashboard.webp', import.meta.url).href,
         },
     },
@@ -563,7 +578,7 @@ const PROJECTS: ProjectData[] = [
         outcome: "10-Module Streamlit App · Synthetic Data",
         desc: "A RevOps command center that runs the B2B funnel end to end on synthetic (Faker) data: ICP-driven discovery and enrichment, rule-based lead scoring that shows the reason for every point, 3-touch outreach, a 90-day revenue scenario model with 4 levers, and post-sales NDR and ARR waterfall analytics, plus an LLM copilot for pipeline questions.",
         media: [
-            { type: 'image', src: new URL('../assets/projects/lead_engine/cover-small.jpg', import.meta.url).href },
+            { type: 'image', src: new URL('../assets/projects/lead_engine/cover.webp', import.meta.url).href },
         ],
         gradient: "from-violet-500 to-purple-500",
         tags: ["Python", "Streamlit", "FastAPI", "LangChain"],
@@ -571,7 +586,7 @@ const PROJECTS: ProjectData[] = [
         liveUrl: "https://revops-lead-engine.streamlit.app/",
         readme: leadEngineReadme,
         images: {
-            'cover.jpg': new URL('../assets/projects/lead_engine/cover-small.jpg', import.meta.url).href,
+            'cover.jpg': new URL('../assets/projects/lead_engine/cover.webp', import.meta.url).href,
         },
     },
     {
@@ -579,7 +594,7 @@ const PROJECTS: ProjectData[] = [
         outcome: "Bilingual · 112 Challenges · Mobile-First",
         desc: "SQL shouldn't require a textbook. I built a mobile-first learning platform with in-browser SQL execution (SQLite/WASM), Google OAuth and XP/levels/achievements: 112 challenges across 10 modules, from SELECT to CTEs and DDL/DML, deployed on Vercel with Next.js.",
         media: [
-            { type: 'video', src: new URL('../assets/projects/punksql/demo-iphone.mp4', import.meta.url).href, contain: true },
+            { type: 'video', src: new URL('../assets/projects/punksql/demo-iphone.mp4', import.meta.url).href, contain: true, poster: new URL('../assets/projects/punksql/demo-poster.webp', import.meta.url).href },
         ],
         gradient: "from-rose-500 to-pink-500",
         tags: ["Next.js", "TypeScript", "SQLite/WASM", "Vercel"],
@@ -606,12 +621,12 @@ const PROJECTS: ProjectData[] = [
     {
         title: "MusicInsights AI",
         outcome: "160k+ Tracks · 100 Years of Data",
-        desc: "What separates a hit from a miss? I analyzed 160k+ tracks spanning 100 years of music evolution using an AI consultant powered by LangChain and Gemini 2.0 Flash — surfacing interactive trend visualizations and answering music insight questions in natural language.",
+        desc: "What separates a hit from a miss? I analyzed 160k+ tracks spanning 100 years of music evolution using an AI consultant powered by LangChain and Gemini 2.0 Flash, with interactive trend visualizations and answering music insight questions in natural language.",
         media: [
             { type: 'image', src: new URL('../assets/projects/spotify-project/dashboard.webp', import.meta.url).href },
             { type: 'image', src: new URL('../assets/projects/spotify-project/chatbot.webp', import.meta.url).href },
             { type: 'image', src: new URL('../assets/projects/spotify-project/insights.webp', import.meta.url).href },
-            { type: 'image', src: new URL('../assets/projects/spotify-project/Architecture.png', import.meta.url).href, contain: true },
+            { type: 'image', src: new URL('../assets/projects/spotify-project/Architecture.webp', import.meta.url).href, contain: true },
         ],
         gradient: "from-sky-500 to-blue-500",
         tags: ["LangChain", "Gemini", "Streamlit", "Pandas"],
@@ -622,7 +637,7 @@ const PROJECTS: ProjectData[] = [
             'chatbot.webp': new URL('../assets/projects/spotify-project/chatbot.webp', import.meta.url).href,
             'dashboard.webp': new URL('../assets/projects/spotify-project/dashboard.webp', import.meta.url).href,
             'insights.webp': new URL('../assets/projects/spotify-project/insights.webp', import.meta.url).href,
-            'architecture.png': new URL('../assets/projects/spotify-project/Architecture.png', import.meta.url).href,
+            'architecture.png': new URL('../assets/projects/spotify-project/Architecture.webp', import.meta.url).href,
         },
     }
 ];
@@ -638,11 +653,11 @@ const EXPERIENCES: { role: string; badge?: string; company: string; period: stri
             "Built the data layer for a live specialty-coffee e-commerce and subscription business: Postgres with row-level security, 18 dbt models generated from one semantic schema (a CI test fails on drift), contribution margin by sales channel, monthly P&L, moving-average cost of goods.",
             "Shipped an AI analyst that answers business questions in plain language over SQL. The pipeline computes, the model only reads: read-only database role, SQL allowlist, per-tenant RLS, query timeouts, and a checker that verifies every number the model writes against the query results.",
             "Built a multi-source ingestion + dbt pipeline (ERP API and e-commerce database) with explicit cross-source deduplication, integer-cents money handling, and golden-metric regression checks.",
-            "Built 20+ Looker Studio dashboards integrating 10+ data sources (CRMs, GA4/GTM, Google/Meta Ads, ERPs, POS, bank feeds) — adopted as the primary operating view across 4 client verticals.",
+            "Built 20+ Looker Studio dashboards integrating 10+ data sources (CRMs, GA4/GTM, Google/Meta Ads, ERPs, POS, bank feeds), used as the primary operating view by clients in 4 verticals.",
             "Developed 10+ financial reporting systems (cash flow, P&L, margin). Automated bank reconciliation reduced daily manual work from ~2h to ~10min, enabling near-real-time tracking.",
-            "Managed R$100K+ in annual media budgets across Google, Meta, and 10+ marketplaces — achieving ~20% average CPA reduction through channel mix optimization.",
+            "Managed R$100K+ in annual media budgets across Google, Meta, and 10+ marketplaces, with ~20% average CPA reduction from channel-mix changes.",
             "Designed and maintained ELT workflows unifying data across 10+ platforms (Shopify, Mercado Livre, OLX, WooCommerce, NuvemShop) and 3 ERPs (Omie, Bling, Tiny) into consolidated analytics layers.",
-            "Automated recurring reporting with Python scripts, API integrations, and n8n — eliminating 50+ hours/month of manual data handling."
+            "Automated recurring reporting with Python scripts, API integrations, and n8n, saving 50+ hours/month of manual data handling."
         ]
     },
     {
@@ -652,10 +667,10 @@ const EXPERIENCES: { role: string; badge?: string; company: string; period: stri
         logo: omiePng,
         intro: "Analytical and commercial leadership at Brazil's leading cloud ERP & Fintech platform (raised $160M Series D in 2025 at $700M+ valuation). Promoted Junior → Senior in 10 months. One of ~15 retained from a ~90-person commercial team during post-COVID restructuring. Contributed to 200+ ERP adoptions across SMB and enterprise segments.",
         bullets: [
-            "Conducted 1,000+ deep-dive diagnostic sessions with SMB founders and executives using SPIN Selling methodology — mapping operational inefficiencies across CRM, Sales, Inventory, Production, Purchasing, Finance (P&L, cash flow, bank reconciliation), and E-commerce/POS workflows. Enterprise accounts included Belgo Cercas/ArcelorMittal and Caffeine Army/Supercoffee.",
-            "Built personal Looker Studio dashboards and Excel scoring models for pipeline management — monitoring stage conversion, velocity, and forecast accuracy using Predictable Revenue and Inside Sales frameworks.",
+            "Conducted 1,000+ deep-dive diagnostic sessions with SMB founders and executives using SPIN Selling, mapping operational inefficiencies across CRM, Sales, Inventory, Production, Purchasing, Finance (P&L, cash flow, bank reconciliation), and E-commerce/POS workflows. Enterprise accounts included Belgo Cercas/ArcelorMittal and Caffeine Army/Supercoffee.",
+            "Built personal Looker Studio dashboards and Excel scoring models for pipeline management, tracking stage conversion, velocity and forecast accuracy using Predictable Revenue and Inside Sales frameworks.",
             "Partnered with Product, Customer Success, and OmieStore teams to translate account insights into strategic feedback supporting platform evolution and retention.",
-            "Managed full-cycle B2B sales from prospecting through close — averaging ~10 new client acquisitions per month across ~2 years, serving SMB through enterprise segments."
+            "Managed full-cycle B2B sales from prospecting through close, averaging ~10 new clients per month across ~2 years, serving SMB through enterprise segments."
         ]
     },
     {
@@ -706,7 +721,7 @@ const LOGOS_IMPACTED = [
     { name: 'Multiplan', src: new URL('../assets/logos/multiplan.webp', import.meta.url).href, size: 'h-12 md:h-14 max-w-[150px] md:max-w-[180px]', href: 'http://multiplan.com.br/' },
 ];
 
-const MediaCarousel = ({ media, containerClasses }: { media: MediaItem[], containerClasses: string }) => {
+const MediaCarousel = ({ media, containerClasses, mode = 'card' }: { media: MediaItem[], containerClasses: string, mode?: 'card' | 'modal' }) => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const touchStartX = useRef<number>(0);
 
@@ -743,7 +758,7 @@ const MediaCarousel = ({ media, containerClasses }: { media: MediaItem[], contai
             {media.map((item, index) => (
                 <div key={index} className={`absolute inset-0 transition-opacity duration-500 ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}>
                     {item.type === 'video' ? (
-                        <LazyVideo src={item.src} contain={item.contain} />
+                        <ProjectVideo src={item.src} poster={item.poster} contain={item.contain} mode={mode} />
                     ) : item.type === 'html' || item.type === 'pdf' ? (
                         <iframe 
                             src={item.src} 
@@ -757,6 +772,7 @@ const MediaCarousel = ({ media, containerClasses }: { media: MediaItem[], contai
                             alt={`Slide ${index + 1}`}
                             className={`w-full h-full ${item.contain || item.src.includes('.gif') ? 'object-contain' : 'object-cover'} ${item.contain ? 'bg-zinc-950/50' : 'bg-zinc-900'}`}
                             loading="lazy"
+                            decoding="async"
                         />
                     )}
                 </div>
@@ -764,10 +780,10 @@ const MediaCarousel = ({ media, containerClasses }: { media: MediaItem[], contai
             
             {media.length > 1 && (
                 <>
-                    <button onClick={prevSlide} className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-20 hover:bg-black/70 backdrop-blur-sm cursor-pointer">
+                    <button onClick={prevSlide} aria-label="Previous image" className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-20 hover:bg-black/70 backdrop-blur-sm cursor-pointer">
                         <ChevronLeft className="w-5 h-5 ml-0.5" />
                     </button>
-                    <button onClick={nextSlide} className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-20 hover:bg-black/70 backdrop-blur-sm cursor-pointer">
+                    <button onClick={nextSlide} aria-label="Next image" className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-20 hover:bg-black/70 backdrop-blur-sm cursor-pointer">
                         <ChevronRight className="w-5 h-5 mr-0.5" />
                     </button>
                     <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20">
@@ -830,7 +846,7 @@ const LogoMarquee = ({ logos, mainLogos }: { logos: any[], mainLogos: any[] }) =
             
             {/* ═══ COMPANIES I'VE WORKED FOR ═══ */}
             <div className="mb-8 relative z-20">
-                <p className="text-[10px] md:text-xs font-bold text-zinc-500 uppercase tracking-[0.4em] mb-6 text-center px-6">Companies I've Worked For</p>
+                <p className="text-[10px] md:text-xs font-bold text-zinc-400 uppercase tracking-[0.4em] mb-6 text-center px-6">Companies I've Worked For</p>
 
                 {/* Desktop: static flex row */}
                 <div className="hidden md:flex flex-wrap justify-center gap-16 items-center px-6 max-w-7xl mx-auto">
@@ -892,7 +908,7 @@ const LogoMarquee = ({ logos, mainLogos }: { logos: any[], mainLogos: any[] }) =
 
             {/* ═══ COMPANIES I'VE IMPACTED ═══ */}
             <div className="max-w-7xl mx-auto px-6 text-center mb-6 relative z-20">
-                <p className="text-[10px] md:text-xs font-bold text-zinc-500 uppercase tracking-[0.4em]">Companies I've Impacted</p>
+                <p className="text-[10px] md:text-xs font-bold text-zinc-400 uppercase tracking-[0.4em]">Companies I've Impacted</p>
             </div>
 
             <motion.div
@@ -955,7 +971,7 @@ const SkillCard = ({ skill, index, expanded, onToggle }: { skill: SkillItem; ind
                 <motion.div
                     animate={{ rotate: expanded ? 45 : 0 }}
                     transition={{ duration: 0.2 }}
-                    className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-zinc-500 mt-0.5 flex-shrink-0"
+                    className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-zinc-400 mt-0.5 flex-shrink-0"
                 >
                     <svg viewBox="0 0 16 16" fill="currentColor" className="w-3 h-3"><path d="M8 2a1 1 0 011 1v4h4a1 1 0 010 2H9v4a1 1 0 01-2 0V9H3a1 1 0 010-2h4V3a1 1 0 011-1z"/></svg>
                 </motion.div>
@@ -1016,8 +1032,8 @@ const SkillCard = ({ skill, index, expanded, onToggle }: { skill: SkillItem; ind
                                         )}
                                     </div>
                                     <span className="text-[13px] font-medium text-zinc-200 flex-shrink-0">{item.tool}</span>
-                                    <span className="text-zinc-600 text-[12px] flex-shrink-0">·</span>
-                                    <span className="text-[11.5px] text-zinc-500 leading-snug min-w-0">{item.context}</span>
+                                    <span className="text-zinc-400 text-[12px] flex-shrink-0">·</span>
+                                    <span className="text-[11.5px] text-zinc-400 leading-snug min-w-0">{item.context}</span>
                                 </div>
                             );
                         })}
@@ -1051,45 +1067,6 @@ const SkillsGrid = () => {
     );
 };
 
-const HERO_PHRASES = [
-    "I build the ones that drive decisions.",
-    "I build the systems that accelerate revenue.",
-    "I architect the data pipelines that power them."
-];
-
-const TextTransition = ({ phrases }: { phrases: string[] }) => {
-    const [index, setIndex] = useState(0);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setIndex((current) => (current + 1) % phrases.length);
-        }, 5500);
-        return () => clearInterval(interval);
-    }, [phrases.length]);
-
-    return (
-        <div className="relative w-full h-full flex items-center justify-center">
-            <AnimatePresence mode="wait">
-                <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
-                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                    exit={{ opacity: 0, y: -20, filter: 'blur(10px)' }}
-                    transition={{ 
-                        duration: 0.8, 
-                        ease: [0.23, 1, 0.32, 1] 
-                    }}
-                    className="absolute inset-0 flex items-center justify-center"
-                >
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-teal-300 whitespace-normal">
-                        {phrases[index]}
-                    </span>
-                </motion.div>
-            </AnimatePresence>
-        </div>
-    );
-};
-
 const SECTION_LINKS = [
     { id: 'experience', label: 'Experience' },
     { id: 'projects',   label: 'Projects'   },
@@ -1113,7 +1090,7 @@ const SectionNav = ({ activeSection, visible }: { activeSection: string; visible
                     transition={{ type: 'spring', damping: 25, stiffness: 200 }}
                     className="md:hidden fixed bottom-0 left-0 z-[80] w-full border-t border-white/5 bg-zinc-950/90 backdrop-blur-xl pb-[safe-area-inset-bottom]"
                 >
-                    <div className="max-w-7xl mx-auto px-3 py-3">
+                    <div className="max-w-7xl mx-auto px-3 py-2">
                         <div className="grid grid-cols-5 gap-1">
                             {SECTION_LINKS.map(({ id, label }) => {
                                 const isActive = activeSection === id;
@@ -1121,14 +1098,14 @@ const SectionNav = ({ activeSection, visible }: { activeSection: string; visible
                                     <button
                                         key={id}
                                         onClick={() => scrollTo(id)}
-                                        className={`relative py-2.5 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer text-center flex flex-col items-center justify-center gap-1 ${
+                                        className={`relative py-2 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer text-center flex flex-col items-center justify-center gap-1 ${
                                             isActive
                                                 ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20'
-                                                : 'text-zinc-500 bg-transparent border border-transparent hover:text-zinc-300'
+                                                : 'text-zinc-400 bg-transparent border border-transparent hover:text-zinc-200'
                                         }`}
                                     >
                                         <span className={isActive ? 'opacity-100' : 'opacity-0'}>
-                                            <div className="w-1 h-1 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                                            <div className="w-1 h-1 rounded-full bg-emerald-500" />
                                         </span>
                                         {label}
                                     </button>
@@ -1162,7 +1139,7 @@ function ModalCaseStudy({ readme, images, gradient }: { readme: string; images: 
         <div className="relative">
             {/* Reading progress bar */}
             <div className="sticky top-0 z-10 bg-zinc-900/95 backdrop-blur-sm border-b border-white/5 px-8 py-3 flex items-center gap-3">
-                <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest shrink-0">Case Study</span>
+                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest shrink-0">Case Study</span>
                 <div className="flex-1 h-[2px] bg-zinc-800 rounded-full overflow-hidden">
                     <motion.div
                         className={`h-full rounded-full bg-gradient-to-r ${gradient}`}
@@ -1170,7 +1147,7 @@ function ModalCaseStudy({ readme, images, gradient }: { readme: string; images: 
                         transition={{ duration: 0.1 }}
                     />
                 </div>
-                <span className="text-[10px] text-zinc-600 shrink-0">{Math.round(progress * 100)}%</span>
+                <span className="text-[10px] text-zinc-400 shrink-0">{Math.round(progress * 100)}%</span>
             </div>
 
             {/* Scrollable article */}
@@ -1254,7 +1231,7 @@ function CaseStudyRenderer({ readme, images }: { readme: string; images: Record<
                                 className="w-full rounded-xl border border-white/10 object-cover"
                                 loading="lazy"
                             />
-                            {alt && <figcaption className="text-center text-xs text-zinc-600 mt-2">{alt}</figcaption>}
+                            {alt && <figcaption className="text-center text-xs text-zinc-400 mt-2">{alt}</figcaption>}
                         </figure>
                     );
                 },
@@ -1268,59 +1245,37 @@ function CaseStudyRenderer({ readme, images }: { readme: string; images: Record<
     );
 }
 
-function ScrollAmbientGlow() {
-    const { scrollYProgress } = useScroll();
-
-    // Slow, organic spring — lags deliberately behind scroll
-    const spring = useSpring(scrollYProgress, { stiffness: 22, damping: 22, restDelta: 0.001 });
-
-    // Fade in after hero, stay through page, dissolve near footer
-    const opacity = useTransform(scrollYProgress, [0.06, 0.16, 0.88, 0.98], [0, 1, 1, 0]);
-
-    // Blob 1 — large emerald, anchored top-right, drifts down-left with scroll
-    const b1x = useTransform(spring, [0, 1], [100, -320]);
-    const b1y = useTransform(spring, [0, 1], [-60, 460]);
-
-    // Blob 2 — cyan, anchored bottom-left, drifts up-right with scroll
-    const b2x = useTransform(spring, [0, 1], [-60, 360]);
-    const b2y = useTransform(spring, [0, 1], [200, -280]);
-
-    return (
-        <motion.div
-            style={{ opacity, zIndex: 1 }}
-            className="fixed inset-0 pointer-events-none overflow-hidden"
-            aria-hidden="true"
-        >
-            {/* Primary glow — emerald */}
-            <motion.div
-                style={{
-                    x: b1x,
-                    y: b1y,
-                    background: 'radial-gradient(circle, rgba(16,185,129,0.13) 0%, transparent 70%)',
-                    filter: 'blur(80px)',
-                }}
-                className="absolute top-0 right-[6%] w-[680px] h-[680px] rounded-full"
-            />
-            {/* Secondary glow — cyan */}
-            <motion.div
-                style={{
-                    x: b2x,
-                    y: b2y,
-                    background: 'radial-gradient(circle, rgba(34,211,238,0.09) 0%, transparent 70%)',
-                    filter: 'blur(90px)',
-                }}
-                className="absolute bottom-[18%] left-[4%] w-[500px] h-[500px] rounded-full"
-            />
-        </motion.div>
-    );
-}
 
 export default function PortfolioEduardo() {
     const activeSection = useBehaviorTracking();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [selectedProject, setSelectedProject] = useState<typeof PROJECTS[0] | null>(null);
+    const modalRef = useRef<HTMLDivElement>(null);
+    const modalCloseRef = useRef<HTMLButtonElement>(null);
+    const lastFocusRef = useRef<HTMLElement | null>(null);
+
+    // Move focus into the dialog when it opens and back to the card when it closes.
+    useEffect(() => {
+        if (selectedProject) {
+            lastFocusRef.current = document.activeElement as HTMLElement | null;
+            const id = requestAnimationFrame(() => modalCloseRef.current?.focus());
+            return () => cancelAnimationFrame(id);
+        }
+        lastFocusRef.current?.focus();
+    }, [selectedProject]);
     const [navShowPills, setNavShowPills] = useState(false);
     const sectionNavSentinelRef = useRef<HTMLDivElement>(null);
+    // The mobile section bar hides while scrolling down so it doesn't cover content.
+    const [scrollingDown, setScrollingDown] = useState(false);
+    useEffect(() => {
+        let lastY = window.scrollY;
+        const onScroll = () => {
+            const y = window.scrollY;
+            if (Math.abs(y - lastY) > 8) { setScrollingDown(y > lastY); lastY = y; }
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
+    }, []);
 
     useEffect(() => {
         const originalTitle = document.title;
@@ -1347,35 +1302,25 @@ export default function PortfolioEduardo() {
     };
 
     const { scrollYProgress } = useScroll();
-    const smoothScroll = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
-    const progressWidth = useTransform(smoothScroll, [0, 1], ['0%', '100%']);
-    const heroY = useTransform(scrollYProgress, [0, 0.3], [0, -80]);
-    const heroOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
-    const torusY = useTransform(scrollYProgress, [0, 0.3], [0, -120]);
-    const aboutTextY = useTransform(scrollYProgress, [0.3, 0.5], [50, 0]);
-    const aboutImageY = useTransform(scrollYProgress, [0.3, 0.5], [80, 0]);
+    const torusY = useTransform(scrollYProgress, [0, 0.3], [0, -60]);
 
     const navLink = (id: string, label: string) => (
         <a href={`#${id}`} className={`relative text-sm font-medium transition-colors duration-200 ${activeSection === id ? 'text-white' : 'text-zinc-400 hover:text-white'}`}>
             {label}
             {activeSection === id && (
-                <motion.span layoutId="nav-indicator" className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-emerald-500 to-cyan-500" />
+                <motion.span layoutId="nav-indicator" className="absolute -bottom-1 left-0 right-0 h-px bg-emerald-500" />
             )}
         </a>
     );
 
     return (
         <div className="bg-zinc-950 text-white min-h-screen">
-            <motion.div className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-500 to-cyan-500 z-[100] origin-left" style={{ width: progressWidth }} />
-
-            <ScrollAmbientGlow />
-
             {/* ═══ NAVIGATION ═══ */}
             <nav id="main-nav" className="fixed top-0 w-full z-[90] border-b border-white/5 bg-zinc-950/85 backdrop-blur-xl">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                     <a href="#" className="flex items-center gap-2 group">
                         <span className="text-xl font-bold tracking-tight">
-                            Eduardo <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Cornelsen</span>
+                            Eduardo <span className="text-emerald-400">Cornelsen</span>
                         </span>
                     </a>
 
@@ -1398,7 +1343,7 @@ export default function PortfolioEduardo() {
                                                 onClick={() => scrollToSection(id)}
                                                 className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-200 cursor-pointer ${
                                                     isActive
-                                                        ? 'text-black bg-emerald-500 shadow-md shadow-emerald-500/25'
+                                                        ? 'text-black bg-emerald-500'
                                                         : 'text-zinc-300 bg-zinc-800/80 border border-zinc-700/60 hover:bg-zinc-700 hover:text-white'
                                                 }`}
                                             >
@@ -1460,7 +1405,7 @@ export default function PortfolioEduardo() {
                                 <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
                             </svg>
                         </a>
-                        <button className="p-2 text-zinc-400 hover:text-white transition-colors cursor-pointer" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                        <button className="p-2 text-zinc-400 hover:text-white transition-colors cursor-pointer" aria-label={isMenuOpen ? 'Close menu' : 'Open menu'} aria-expanded={isMenuOpen} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                             {isMenuOpen ? <X className="w-6 h-6" strokeWidth={2.5} /> : <Menu className="w-6 h-6" strokeWidth={2.5} />}
                         </button>
                     </div>
@@ -1496,7 +1441,7 @@ export default function PortfolioEduardo() {
 
             {/* ═══ HERO ═══ */}
             <section className="relative overflow-hidden min-h-screen flex flex-col">
-                <motion.div style={{ y: torusY }} className="absolute inset-0 z-0 opacity-60">
+                <motion.div style={{ y: torusY }} className="absolute inset-0 z-0 opacity-60 [mask-image:radial-gradient(ellipse_70%_60%_at_50%_50%,rgba(0,0,0,0.45)_25%,black_75%)]">
                     <Suspense fallback={<TorusFallback />}>
                         <TorusField />
                     </Suspense>
@@ -1505,21 +1450,19 @@ export default function PortfolioEduardo() {
                 <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(16,185,129,0.08)_0%,transparent_60%)]" />
 
                 <div className="flex-1 flex items-center justify-center px-6 pt-24 md:pt-32 pb-20">
-                    <motion.div style={{ y: heroY, opacity: heroOpacity }} className="max-w-5xl mx-auto text-center relative z-10 w-full">
+                    <div className="max-w-5xl mx-auto text-center relative z-10 w-full">
                         <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} className="mb-6 sm:mb-8 flex justify-center">
-                            <img src={new URL('../assets/logos/Profile_compressed.webp', import.meta.url).href} alt="Eduardo Cornelsen" className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full border-4 border-zinc-800 shadow-2xl object-cover" width="128" height="128" />
+                            <img src={new URL('../assets/logos/Profile_compressed.webp', import.meta.url).href} alt="Eduardo Cornelsen" className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full border-4 border-zinc-800 object-cover" width="128" height="128" fetchPriority="high" decoding="async" />
                         </motion.div>
-                        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs sm:text-sm text-emerald-400 mb-6 sm:mb-8">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            Open to Work · Data Analyst · Analytics Engineer
+                        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/25 text-xs sm:text-sm text-emerald-300 mb-6 sm:mb-8">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
+                            Open to remote roles · US/EU · UTC−3
                         </motion.div>
 
                         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.15 }} className="text-5xl sm:text-7xl md:text-8xl font-black tracking-tighter mb-4 sm:mb-6 leading-[0.88]">
                             Eduardo{' '}
                             <br className="hidden sm:block" />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-teal-300">
-                                Cornelsen.
-                            </span>
+                            <span className="text-emerald-400">Cornelsen.</span>
                         </motion.h1>
 
 
@@ -1527,12 +1470,12 @@ export default function PortfolioEduardo() {
                             initial={{ opacity: 0, y: 20 }} 
                             animate={{ opacity: 1, y: 0 }} 
                             transition={{ duration: 0.8, delay: 0.35 }} 
-                            className="text-lg md:text-2xl text-zinc-400 mb-10 sm:mb-12 max-w-4xl mx-auto leading-tight"
+                            className="mb-10 sm:mb-12 max-w-2xl mx-auto"
                         >
-                            Most analytics teams build dashboards.
-                            <div className="font-bold relative flex justify-center mt-3 h-[4em] sm:h-[1.5em] items-center text-xl sm:text-2xl md:text-3xl text-center px-4">
-                                <TextTransition phrases={HERO_PHRASES} />
-                            </div>
+                            <p className="text-xl md:text-3xl font-semibold text-white tracking-tight">Data Analyst & Analytics Engineer</p>
+                            <p className="mt-4 text-base md:text-lg text-zinc-300 leading-relaxed">
+                                I turn ERP, store and ad data into tested dbt models and the reports people use to run the business. Right now I run the data layer and AI analyst for a live specialty-coffee e-commerce.
+                            </p>
                         </motion.div>
 
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.45 }} className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -1540,7 +1483,7 @@ export default function PortfolioEduardo() {
                                 href="https://linkedin.com/in/eduardo-cornelsen" 
                                 target="_blank" 
                                 rel="noreferrer" 
-                                className="w-full sm:w-auto px-8 py-4 bg-emerald-500 text-black font-bold rounded-full hover:bg-emerald-400 active:scale-95 transition-all text-base shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+                                className="w-full sm:w-auto px-7 py-3.5 bg-emerald-500 text-black font-bold rounded-full hover:bg-emerald-400 transition-colors text-base flex items-center justify-center gap-2"
                                 onClick={() => trackEvent('Hero', 'Click LinkedIn', 'Hero CTA')}
                             >
                                 <Linkedin className="w-5 h-5"/> View LinkedIn
@@ -1548,21 +1491,21 @@ export default function PortfolioEduardo() {
                             <a 
                                 href="/Eduardo_Cornelsen_Data_Analyst_q2_2026.pdf" 
                                 target="_blank" 
-                                className="w-full sm:w-auto px-8 py-4 bg-white/5 text-white font-semibold rounded-full hover:bg-white/10 active:scale-95 transition-all border border-white/10 flex items-center justify-center gap-2 text-base backdrop-blur-sm shadow-xl"
+                                className="w-full sm:w-auto px-7 py-3.5 bg-zinc-950/70 text-white font-semibold rounded-full hover:bg-zinc-900 transition-colors border border-white/15 flex items-center justify-center gap-2 text-base"
                                 onClick={() => trackEvent('Hero', 'Download Resume', 'Hero CTA')}
                             >
                                 <img src={downloadIcon} alt="" className="w-5 h-5 brightness-0 invert" />
                                 Download Resume
                             </a>
                         </motion.div>
-                    </motion.div>
+                    </div>
                 </div>
             </section>
 
             {/* ═══ SECTION NAV ═══ — mobile sticky bar; desktop gets pills injected into top nav */}
             {/* Sentinel: desktop nav IntersectionObserver watches this element */}
             <div ref={sectionNavSentinelRef} className="h-px" />
-            <SectionNav activeSection={activeSection} visible={navShowPills} />
+            <SectionNav activeSection={activeSection} visible={navShowPills && !scrollingDown} />
 
             {/* ═══ COMPANIES LOGOS ═══ */}
             <div className="w-full border-y border-white/5">
@@ -1582,7 +1525,7 @@ export default function PortfolioEduardo() {
                             transition={{ duration: 1, delay: 0.1 }}
                             className="text-[11px] md:text-sm font-black text-zinc-200 uppercase tracking-[0.4em]"
                         >
-                            Revenue Analytics for <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">SaaS, Fintech & E-Commerce</span>
+                            Revenue analytics for <span className="text-emerald-400">SaaS, Fintech & E-commerce</span>
                         </motion.p>
                     </div>
                 </motion.div>
@@ -1596,25 +1539,25 @@ export default function PortfolioEduardo() {
                     <div>
                         <div className="text-4xl md:text-5xl font-black text-white mb-2 tabular-nums">1,000+</div>
                         <div className="text-sm md:text-base font-bold text-white">Client Diagnostics</div>
-                        <div className="text-xs text-zinc-500">SMB & Enterprise sessions</div>
+                        <div className="text-xs text-zinc-400">SMB & Enterprise sessions</div>
                     </div>
                     <div>
                         <div className="hidden md:block absolute left-1/4 top-1/2 -translate-y-1/2 w-px h-12 bg-white/5" />
                         <div className="text-4xl md:text-5xl font-black text-white mb-2 tabular-nums">~20%</div>
                         <div className="text-sm md:text-base font-bold text-white">Avg. CPA Reduction</div>
-                        <div className="text-xs text-zinc-500">Via channel mix optimization</div>
+                        <div className="text-xs text-zinc-400">Via channel mix optimization</div>
                     </div>
                     <div>
                         <div className="hidden md:block absolute left-1/2 top-1/2 -translate-y-1/2 w-px h-12 bg-white/5" />
                         <div className="text-4xl md:text-5xl font-black text-white mb-2 tabular-nums">2h→10m</div>
-                        <div className="text-sm md:text-base font-bold text-white">Reporting Automated</div>
-                        <div className="text-xs text-zinc-500">Daily manual work eliminated</div>
+                        <div className="text-sm md:text-base font-bold text-white">Bank Reconciliation</div>
+                        <div className="text-xs text-zinc-400">Daily manual work, automated</div>
                     </div>
                     <div>
                         <div className="hidden md:block absolute left-3/4 top-1/2 -translate-y-1/2 w-px h-12 bg-white/5" />
                         <div className="text-4xl md:text-5xl font-black text-white mb-2 tabular-nums border-none">50h+</div>
                         <div className="text-sm md:text-base font-bold text-white">Hours Saved / Mo</div>
-                        <div className="text-xs text-zinc-500">Via Python + n8n automation</div>
+                        <div className="text-xs text-zinc-400">Via Python + n8n automation</div>
                     </div>
                 </div>
             </section>
@@ -1623,7 +1566,7 @@ export default function PortfolioEduardo() {
             <section id="experience" className="py-28 px-6">
                 <div className="max-w-5xl mx-auto">
                     <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7 }} className="mb-16">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm text-zinc-400 mb-6">
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400 mb-4">
                             Career Path
                         </div>
                         <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">Professional Experience</h2>
@@ -1656,7 +1599,7 @@ export default function PortfolioEduardo() {
                                 <ul className="space-y-2 text-zinc-400 text-sm">
                                     {exp.bullets.map((bullet, j) => (
                                         <li key={j} className="flex gap-2">
-                                            <span className="text-zinc-600 mt-1">•</span>
+                                            <span className="text-zinc-400 mt-1">•</span>
                                             <span className="leading-relaxed">{bullet}</span>
                                         </li>
                                     ))}
@@ -1671,10 +1614,10 @@ export default function PortfolioEduardo() {
             <section id="projects" className="py-28 px-6 bg-zinc-900/30 border-y border-white/5 relative z-[2]">
                 <div className="max-w-7xl mx-auto">
                     <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7 }} className="text-center mb-16">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm text-zinc-400 mb-6">
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400 mb-4">
                             Portfolio & Case Studies
                         </div>
-                        <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">End-to-End Projects</h2>
+                        <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">Projects</h2>
                     </motion.div>
 
                     <div className="grid md:grid-cols-2 gap-5 md:gap-x-8 max-w-4xl mx-auto">
@@ -1685,26 +1628,27 @@ export default function PortfolioEduardo() {
                                 whileInView={{ opacity: 1, y: 0 }} 
                                 viewport={{ once: true, margin: '-40px' }} 
                                 transition={{ duration: 0.5, delay: i * 0.08 }} 
-                                whileHover={{ y: -6 }} 
                                 onClick={() => {
                                     setSelectedProject(proj);
                                     trackEvent('Project', 'View Details', proj.title, { project_name: proj.title });
                                 }} 
-                                className="group relative p-px rounded-3xl cursor-pointer overflow-hidden"
+                                data-card
+                                tabIndex={0}
+                                aria-label={`${proj.title}. Press Enter to open the case study.`}
+                                role="group"
+                                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedProject(proj); } }}
+                                className="group relative rounded-2xl cursor-pointer overflow-hidden border border-white/10 hover:border-emerald-500/40 focus-visible:border-emerald-400 transition-colors"
                             >
-                                <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${proj.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                                <div className="relative bg-zinc-900 group-hover:bg-zinc-900/95 rounded-[calc(1.5rem-1px)] h-full flex flex-col transition-colors duration-300 overflow-hidden">
+                                <div className="relative bg-zinc-900 h-full flex flex-col overflow-hidden">
                                     <MediaCarousel media={proj.media} containerClasses="w-full aspect-video border-b border-white/5 bg-black" />
                                     <div className="p-7 flex-1 flex flex-col">
-                                        <div className="flex items-start justify-between mb-4">
-                                            <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full bg-gradient-to-r ${proj.gradient} bg-opacity-10 text-white/80 border border-white/10`}>
-                                                {proj.outcome}
-                                            </span>
+                                        <div className="text-[11px] font-semibold uppercase tracking-wider text-emerald-400 mb-3">
+                                            {proj.outcome}
                                         </div>
-                                        <h3 className="text-lg font-bold text-white mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-zinc-300 transition-all">
+                                        <h3 className="text-lg font-bold text-white mb-3">
                                             {proj.title}
                                         </h3>
-                                        <p className="text-zinc-400 text-sm leading-relaxed flex-1 mb-5">{proj.desc}</p>
+                                        <p className="text-zinc-400 text-sm leading-relaxed flex-1 mb-5 line-clamp-4">{proj.desc}</p>
                                         <div className="flex flex-wrap gap-2 mb-4">
                                             {proj.tags.map((tag, j) => {
                                                 const logo = TECH_LOGOS[tag];
@@ -1723,7 +1667,10 @@ export default function PortfolioEduardo() {
                                                 );
                                             })}
                                         </div>
-                                        <div className="flex items-center gap-3 text-xs font-semibold opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity mt-auto">
+                                        {proj.liveUrl?.includes('streamlit.app') && (
+                                            <p className="text-[11px] text-zinc-400 mb-3">Live demo runs on Streamlit Cloud and can take ~30 s to wake up.</p>
+                                        )}
+                                        <div className="flex items-center gap-3 text-xs font-semibold opacity-100 md:opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity mt-auto">
                                             {proj.liveUrl && (
                                                 <a 
                                                     href={proj.liveUrl} 
@@ -1779,16 +1726,17 @@ export default function PortfolioEduardo() {
                                                         e.stopPropagation();
                                                         trackEvent('Project', 'Click GitHub', proj.title, { project_name: proj.title });
                                                     }}
-                                                    className="text-zinc-400 hover:text-white hover:scale-110 active:scale-95 transition-all cursor-pointer p-1.5"
+                                                    className="text-zinc-400 hover:text-white transition-colors cursor-pointer p-1.5"
                                                     title="View GitHub Repository"
+                                                    aria-label={`${proj.title} on GitHub`}
                                                 >
                                                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
                                                 </a>
                                             ) : (
-                                                <span className="text-[10px] text-zinc-500 whitespace-nowrap" title="Client work: the code is private">Code private</span>
+                                                <span className="text-[10px] text-zinc-400 whitespace-nowrap" title="Client work: the code is private">Code private</span>
                                             )}
                                             <div className="flex items-center gap-1.5 px-2 py-1 whitespace-nowrap ml-auto">
-                                                <span className={`text-transparent bg-clip-text bg-gradient-to-r ${proj.gradient}`}>View Details</span>
+                                                <span className="text-emerald-400">Case study</span>
                                                 <ArrowRight className="w-3 h-3 text-emerald-400" />
                                             </div>
                                         </div>
@@ -1804,11 +1752,11 @@ export default function PortfolioEduardo() {
             <section id="skills" className="py-28 px-6">
                 <div className="max-w-7xl mx-auto">
                     <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7 }} className="text-center mb-16">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm text-zinc-400 mb-6">
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400 mb-4">
                             Technical Skills
                         </div>
-                        <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">My Technical Arsenal</h2>
-                        <p className="text-zinc-500 text-sm mt-3">Click any card to expand</p>
+                        <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">Skills & Tools</h2>
+                        <p className="text-zinc-400 text-sm mt-3">Open a card to see where I used each tool.</p>
                     </motion.div>
 
                     <SkillsGrid />
@@ -1821,8 +1769,8 @@ export default function PortfolioEduardo() {
                     <DataVizShowcase />
                     <DashboardShowcase
                         subtitle="Live BI & Strategic Reporting"
-                        title={<>Analytics Command Centers for <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Every Sector</span></>}
-                        description="Explore automated, real-time dashboards — mirroring the BI architectures developed for Torus Analytics and Mandalah."
+                        title={<>Dashboards I've <span className="text-emerald-400">built</span></>}
+                        description="Interactive versions of the BI dashboards I built for clients at Torus Analytics and Mandalah, with sample data."
                     />
                 </Suspense>
             </div>
@@ -1834,8 +1782,7 @@ export default function PortfolioEduardo() {
                     {/* ROW 1: Torus (left) + My Story headline (right) */}
                     <div className="grid xl:grid-cols-2 gap-12 lg:gap-20 items-center">
                         <motion.div
-                            style={{ y: aboutImageY }}
-                            initial={{ opacity: 0, scale: 0.85 }}
+                                                        initial={{ opacity: 0, scale: 0.85 }}
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true, margin: '-100px' }}
                             transition={{ duration: 1 }}
@@ -1850,19 +1797,18 @@ export default function PortfolioEduardo() {
                         </motion.div>
 
                         <motion.div
-                            style={{ y: aboutTextY }}
-                            initial={{ opacity: 0, x: 50 }}
+                                                        initial={{ opacity: 0, x: 50 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true, margin: '-100px' }}
                             transition={{ duration: 0.8 }}
                         >
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-zinc-400 mb-6">
-                                My Story
+                            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400 mb-4">
+                                About
                             </div>
                             <h2 className="text-3xl lg:text-5xl font-bold tracking-tight">
-                                I've sat in the revenue meetings.{' '}
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
-                                    I know what the VP of Sales needs by Monday — and build the analytics to answer it before they ask.
+                                I spent two years selling ERP software to business owners.{' '}
+                                <span className="text-emerald-400">
+                                    Now I build the reports they kept asking me for.
                                 </span>
                             </h2>
                         </motion.div>
@@ -1878,10 +1824,10 @@ export default function PortfolioEduardo() {
                             className="space-y-6 text-zinc-400 text-base lg:text-[19.8px] leading-loose lg:text-right"
                         >
                             <p>
-                                I have 5 years in analytics — independent consulting for SMBs since 2021 — after 2 years of consultative B2B SaaS sales at <span className="text-white font-medium">Omie</span>, Brazil's leading cloud ERP. I build <span className="text-white font-medium">governed analytics layers</span> (dbt models, tested metric definitions, semantic layers) and the dashboards and AI analysts that read from them.
+                                I have 5 years in analytics, as an independent consultant for SMBs since 2021, after 2 years of consultative B2B SaaS sales at <span className="text-white font-medium">Omie</span>, Brazil's leading cloud ERP. I build <span className="text-white font-medium">governed analytics layers</span> (dbt models, tested metric definitions, semantic layers) and the dashboards and AI analysts that read from them.
                             </p>
                             <p>
-                                Because I've sat in the revenue meetings, I don't just write queries or build pipelines — I understand the <span className="text-white font-medium">business problem behind the ticket</span>. Right now I'm building the data platform for a <span className="text-white font-medium">live specialty-coffee e-commerce</span>: contribution margin by channel, monthly P&L, cost accounting, and an AI analyst that answers questions over SQL without ever computing a number itself. In parallel, the <span className="text-white font-medium">TripleTen</span> Data Science program is deepening my statistics and ML.
+                                Those sales years taught me to start from the <span className="text-white font-medium">business question</span> and work back to the query. Right now I'm building the data platform for a <span className="text-white font-medium">live specialty-coffee e-commerce</span>: contribution margin by channel, monthly P&L, cost accounting, and an AI analyst that answers questions over SQL without ever computing a number itself. In parallel, the <span className="text-white font-medium">TripleTen</span> Data Science program is deepening my statistics and ML.
                             </p>
                         </motion.div>
 
@@ -1908,7 +1854,7 @@ export default function PortfolioEduardo() {
                                     />
                                     <GraduationCap className="w-5 h-5 text-emerald-400 hidden group-hover/link:scale-110 transition-transform"/>
                                 </a>
-                                <div className="text-[10px] text-zinc-500 font-bold tracking-wider mb-1 uppercase">INSPER (São Paulo)</div>
+                                <div className="text-[10px] text-zinc-400 font-bold tracking-wider mb-1 uppercase">INSPER (São Paulo)</div>
                                 <div className="text-sm font-semibold text-white">Bachelor of Business Administration (BBA)</div>
                                 <div className="text-xs text-zinc-400 italic mt-2">#1 Brazilian business school · Triple Accredited (AACSB, AMBA, EQUIS)</div>
                             </div>
@@ -1929,7 +1875,7 @@ export default function PortfolioEduardo() {
                                     />
                                     <GraduationCap className="w-5 h-5 text-cyan-400 hidden group-hover/link:scale-110 transition-transform"/>
                                 </a>
-                                <div className="text-[10px] text-zinc-500 font-bold tracking-wider mb-1 uppercase">AARHUS UNIV. (Denmark)</div>
+                                <div className="text-[10px] text-zinc-400 font-bold tracking-wider mb-1 uppercase">AARHUS UNIV. (Denmark)</div>
                                 <div className="text-sm font-semibold text-white">Exchange Program, Innovation & Global Business</div>
                                 <div className="text-xs text-zinc-400 italic mt-2">Triple Accredited Business School (AACSB, AMBA, EQUIS)</div>
                             </div>
@@ -1950,8 +1896,8 @@ export default function PortfolioEduardo() {
                                     />
                                     <Sparkles className="w-5 h-5 text-violet-400 hidden group-hover/link:scale-110 transition-transform"/>
                                 </a>
-                                <div className="text-[10px] text-zinc-500 font-bold tracking-wider mb-1 uppercase">MIT / D-Lab (Boston)</div>
-                                <div className="text-sm font-semibold text-white">MIT Innovation Award — Best Project</div>
+                                <div className="text-[10px] text-zinc-400 font-bold tracking-wider mb-1 uppercase">MIT / D-Lab (Boston)</div>
+                                <div className="text-sm font-semibold text-white">MIT Innovation Award: Best Project</div>
                                 <div className="text-xs text-zinc-400 italic mt-2">Presented to MIT Master's & PhD panel · "Transformation Engineering"</div>
                             </div>
 
@@ -1971,7 +1917,7 @@ export default function PortfolioEduardo() {
                                     />
                                     <BookOpen className="w-5 h-5 text-amber-400 hidden group-hover/link:scale-110 transition-transform"/>
                                 </a>
-                                <div className="text-[10px] text-zinc-500 font-bold tracking-wider mb-1 uppercase">CERTIFICATION</div>
+                                <div className="text-[10px] text-zinc-400 font-bold tracking-wider mb-1 uppercase">CERTIFICATION</div>
                                 <div className="text-sm font-semibold text-white">Lean Six Sigma Green Belt (Falconi)</div>
                                 <div className="text-xs text-zinc-400 italic mt-2">Falconi · Lean Six Sigma Green Belt</div>
                             </div>
@@ -1993,8 +1939,8 @@ export default function PortfolioEduardo() {
                                     />
                                     <GraduationCap className="w-5 h-5 text-sky-400 hidden group-hover/link:scale-110 transition-transform"/>
                                 </a>
-                                <div className="text-[10px] text-zinc-500 font-bold tracking-wider mb-1 uppercase">TRAINING · JUL 2025 – PRESENT</div>
-                                <div className="text-sm font-semibold text-white">TripleTen — Data Science Program (700h+)</div>
+                                <div className="text-[10px] text-zinc-400 font-bold tracking-wider mb-1 uppercase">TRAINING · JUL 2025 – PRESENT</div>
+                                <div className="text-sm font-semibold text-white">TripleTen: Data Science Program (700h+)</div>
                                 <div className="text-xs text-zinc-400 italic mt-2">16 end-to-end projects · statistics, ML, churn modeling, "chat with data" agents (LangChain), Databricks/PySpark</div>
                             </div>
                             {/* Card 6 — Databricks */}
@@ -2014,8 +1960,8 @@ export default function PortfolioEduardo() {
                                     />
                                     <BookOpen className="w-5 h-5 text-orange-400 hidden group-hover/link:scale-110 transition-transform"/>
                                 </a>
-                                <div className="text-[10px] text-zinc-500 font-bold tracking-wider mb-1 uppercase">ACCREDITATION</div>
-                                <div className="text-sm font-semibold text-white">Databricks Academy Accreditations — Databricks Fundamentals & AI Agent Fundamentals</div>
+                                <div className="text-[10px] text-zinc-400 font-bold tracking-wider mb-1 uppercase">ACCREDITATION</div>
+                                <div className="text-sm font-semibold text-white">Databricks Academy Accreditations: Databricks Fundamentals & AI Agent Fundamentals</div>
                                 <div className="text-xs text-zinc-400 italic mt-2">Issued April 2026 · Medallion Architecture · AI Agents · MCP & AI Integration · Azure Databricks</div>
                             </div>
 
@@ -2036,8 +1982,8 @@ export default function PortfolioEduardo() {
                                     />
                                     <TrendingUp className="w-5 h-5 text-zinc-300 hidden group-hover/link:scale-110 transition-transform"/>
                                 </a>
-                                <div className="text-[10px] text-zinc-500 font-bold tracking-wider mb-1 uppercase">ACHIEVEMENT</div>
-                                <div className="text-sm font-semibold text-white">Epic Games Data Analyst — Final Round</div>
+                                <div className="text-[10px] text-zinc-400 font-bold tracking-wider mb-1 uppercase">ACHIEVEMENT</div>
+                                <div className="text-sm font-semibold text-white">Epic Games Data Analyst: Final Round</div>
                                 <div className="text-xs text-zinc-400 italic mt-2">Final round at Epic Games UX Research Data Analyst role, Feb 2026</div>
                             </div>
                         </motion.div>
@@ -2052,6 +1998,19 @@ export default function PortfolioEduardo() {
                         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                         className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[200] flex items-start justify-center p-4 sm:p-6 py-8 md:py-14 overflow-y-auto"
                         onClick={() => setSelectedProject(null)}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="project-modal-title"
+                        ref={modalRef}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Escape') { setSelectedProject(null); return; }
+                            if (e.key !== 'Tab' || !modalRef.current) return;
+                            const focusable = modalRef.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
+                            if (focusable.length === 0) return;
+                            const first = focusable[0], last = focusable[focusable.length - 1];
+                            if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+                            else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+                        }}
                     >
                         <motion.div
                             initial={{ opacity: 0, y: 40, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 40, scale: 0.97 }}
@@ -2061,13 +2020,13 @@ export default function PortfolioEduardo() {
                         >
                             {/* Media header */}
                             <div className="relative overflow-hidden group">
-                                <MediaCarousel media={selectedProject.media} containerClasses="h-64 sm:h-80 w-full bg-black/50" />
+                                <MediaCarousel media={selectedProject.media} mode="modal" containerClasses="h-64 sm:h-80 w-full bg-black/50" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/90 via-transparent to-transparent pointer-events-none" />
-                                <button onClick={(e) => { e.stopPropagation(); setSelectedProject(null); }} className="absolute z-30 top-4 right-4 w-10 h-10 bg-black/50 rounded-full flex items-center justify-center hover:bg-black/70 transition-colors cursor-pointer backdrop-blur-sm">
+                                <button ref={modalCloseRef} aria-label="Close" onClick={(e) => { e.stopPropagation(); setSelectedProject(null); }} className="absolute z-30 top-4 right-4 w-10 h-10 bg-black/50 rounded-full flex items-center justify-center hover:bg-black/70 transition-colors cursor-pointer backdrop-blur-sm">
                                     <X className="w-5 h-5 text-white" />
                                 </button>
                                 <div className="absolute bottom-4 right-4 z-30 pointer-events-none">
-                                    <span className={`text-xs font-bold px-3 py-1 rounded-full bg-gradient-to-r ${selectedProject.gradient} text-white shadow-lg`}>
+                                    <span className="text-xs font-semibold px-3 py-1 rounded-full bg-zinc-950/80 border border-white/10 text-emerald-300">
                                         {selectedProject.outcome}
                                     </span>
                                 </div>
@@ -2075,7 +2034,7 @@ export default function PortfolioEduardo() {
 
                             {/* Header: title + tags + desc + CTAs */}
                             <div className="px-8 pt-8 pb-6 border-b border-white/5">
-                                <h3 className="text-2xl font-bold mb-3">{selectedProject.title}</h3>
+                                <h3 id="project-modal-title" className="text-2xl font-bold mb-3">{selectedProject.title}</h3>
                                 <div className="flex flex-wrap gap-2 mt-4">
                                     {selectedProject.tags.map((tag, j) => {
                                         const logo = TECH_LOGOS[tag];
@@ -2088,13 +2047,16 @@ export default function PortfolioEduardo() {
                                     })}
                                 </div>
                                 <p className="text-zinc-400 leading-relaxed mb-7 text-[15px] mt-5">{selectedProject.desc}</p>
+                                {selectedProject.liveUrl?.includes('streamlit.app') && (
+                                    <p className="text-xs text-zinc-400 -mt-4 mb-5">The live demo runs on Streamlit Cloud and can take ~30 s to wake up.</p>
+                                )}
                                 <div className="flex flex-wrap gap-3">
                                     {selectedProject.liveUrl && (
                                         <a 
                                             href={selectedProject.liveUrl} 
                                             target="_blank" 
                                             rel="noreferrer" 
-                                            className="flex-1 min-w-[160px] px-5 py-2.5 bg-emerald-500 text-black font-bold rounded-full hover:bg-emerald-400 transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-emerald-500/20 text-sm order-1"
+                                            className="flex-1 min-w-[160px] px-5 py-2.5 bg-emerald-500 text-black font-bold rounded-full hover:bg-emerald-400 transition-colors flex items-center justify-center gap-2 cursor-pointer text-sm order-1"
                                             onClick={() => trackEvent('Project Modal', 'Click Live Demo', selectedProject.title, { project_name: selectedProject.title })}
                                         >
                                             <Zap className="w-4 h-4" />
@@ -2161,9 +2123,9 @@ export default function PortfolioEduardo() {
                         Let's connect
                     </motion.div>
                     <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.1 }} className="text-4xl md:text-6xl font-black tracking-tighter mb-6 leading-tight">
-                        If your revenue data raises more questions than it answers — <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">let's talk.</span>
+                        Hiring a data analyst or analytics engineer? <span className="text-emerald-400">Let's talk.</span>
                     </motion.h2>
-                    <motion.p initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.2 }} className="text-zinc-500 text-sm mb-2">
+                    <motion.p initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.2 }} className="text-zinc-400 text-sm mb-2">
                         Available for Data Analyst & Analytics Engineering roles. I respond within 24 hours.
                     </motion.p>
                     <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.3 }} className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
@@ -2171,7 +2133,7 @@ export default function PortfolioEduardo() {
                             href="https://linkedin.com/in/eduardo-cornelsen" 
                             target="_blank" 
                             rel="noreferrer" 
-                            className="w-full sm:w-auto px-8 py-4 bg-emerald-500 text-black font-bold rounded-full hover:bg-emerald-400 active:scale-95 transition-all text-base shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+                            className="w-full sm:w-auto px-7 py-3.5 bg-emerald-500 text-black font-bold rounded-full hover:bg-emerald-400 transition-colors text-base flex items-center justify-center gap-2"
                             onClick={() => trackEvent('Footer', 'Click LinkedIn', 'Footer CTA')}
                         >
                             <Linkedin className="w-5 h-5"/> LinkedIn
@@ -2189,14 +2151,14 @@ export default function PortfolioEduardo() {
                     <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                         <div className="flex items-center gap-3">
                             <span className="text-lg font-bold">
-                                Eduardo <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Cornelsen</span>
+                                Eduardo <span className="text-emerald-400">Cornelsen</span>
                             </span>
                         </div>
-                        <p className="text-zinc-700 text-xs">&copy; {new Date().getFullYear()} Eduardo Cornelsen. Built with React & Tailwind.</p>
+                        <p className="text-zinc-400 text-xs">&copy; {new Date().getFullYear()} Eduardo Cornelsen. Built with React & Tailwind.</p>
                     </div>
                 </div>
             </footer>
-            <Chatbot navVisible={navShowPills} />
+            <Chatbot navVisible={navShowPills && !scrollingDown} />
         </div>
     );
 }

@@ -1,6 +1,7 @@
 import { StrictMode, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { MotionConfig } from 'motion/react';
 import './index.css';
 
 import PortfolioEduardo from './components/PortfolioEduardo.tsx';
@@ -24,10 +25,12 @@ const AnalyticsWrapper = () => {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/*" element={<AnalyticsWrapper />} />
-      </Routes>
-    </BrowserRouter>
+    <MotionConfig reducedMotion="user">
+      <BrowserRouter>
+        <Routes>
+          <Route path="/*" element={<AnalyticsWrapper />} />
+        </Routes>
+      </BrowserRouter>
+    </MotionConfig>
   </StrictMode>,
 );

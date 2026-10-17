@@ -312,7 +312,7 @@ function PlotlySurface() {
                 <div className="flex flex-col items-center gap-3 text-center px-6">
                     <span className="text-2xl">⚠️</span>
                     <span className="text-zinc-400 text-sm font-semibold">3D surface could not load</span>
-                    <span className="text-zinc-600 text-xs">Plotly CDN script was blocked — check CSP or network.</span>
+                    <span className="text-zinc-400 text-xs">Plotly CDN script was blocked — check CSP or network.</span>
                     <button
                         onClick={() => { setError(false); window.location.reload(); }}
                         className="mt-1 text-xs px-3 py-1.5 rounded-full border border-violet-500/40 text-violet-400 hover:bg-violet-500/10 transition-colors"
@@ -397,7 +397,7 @@ function PlotlySankey() {
                 <div className="flex flex-col items-center gap-3 text-center px-6">
                     <span className="text-2xl">⚠️</span>
                     <span className="text-zinc-400 text-sm font-semibold">Flow diagram could not load</span>
-                    <span className="text-zinc-600 text-xs">Plotly CDN script was blocked — check CSP or network.</span>
+                    <span className="text-zinc-400 text-xs">Plotly CDN script was blocked — check CSP or network.</span>
                     <button
                         onClick={() => { setError(false); window.location.reload(); }}
                         className="mt-1 text-xs px-3 py-1.5 rounded-full border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 transition-colors"
@@ -520,7 +520,7 @@ export default function DataVizShowcase() {
     const allVals = TABLE_DATA.flatMap(r => [r.q1, r.q2, r.q3, r.q4]);
     const minV = Math.min(...allVals), maxV = Math.max(...allVals);
 
-    const thCls = 'px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest text-zinc-500 cursor-pointer hover:text-emerald-400 transition-colors select-none';
+    const thCls = 'px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest text-zinc-400 cursor-pointer hover:text-emerald-400 transition-colors select-none';
     const tdCls = 'px-4 py-3 text-sm text-zinc-200';
 
     function sortBy(col: string) {
@@ -589,11 +589,11 @@ export default function DataVizShowcase() {
                                         className="bg-zinc-900 border border-white/5 rounded-2xl p-4 relative overflow-hidden"
                                     >
                                         <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-20" style={{ background: k.color }} />
-                                        <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-2">{k.label}</div>
+                                        <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-2">{k.label}</div>
                                         <div className="text-xl font-bold text-white tabular-nums">{k.value}</div>
                                         <div className={`flex items-center gap-1 text-xs mt-1 font-semibold ${k.up ? 'text-emerald-400' : 'text-red-400'}`}>
                                             {k.up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                                            {k.delta} <span className="text-zinc-600">YoY</span>
+                                            {k.delta} <span className="text-zinc-400">YoY</span>
                                         </div>
                                     </motion.div>
                                 ))}
@@ -606,7 +606,7 @@ export default function DataVizShowcase() {
                                     <div className="flex items-center justify-between mb-4">
                                         <div>
                                             <div className="text-sm font-bold text-white">Revenue & Pipeline</div>
-                                            <div className="text-xs text-zinc-500">Trailing 12 months</div>
+                                            <div className="text-xs text-zinc-400">Trailing 12 months</div>
                                         </div>
                                         <div className="flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 px-2 py-1 rounded-full">
                                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -644,7 +644,7 @@ export default function DataVizShowcase() {
                                 {/* Bar chart — quarterly */}
                                 <div className="bg-zinc-900 border border-white/5 rounded-3xl p-6">
                                     <div className="text-sm font-bold text-white mb-1">Quarterly Wins</div>
-                                    <div className="text-xs text-zinc-500 mb-4">Deals closed per region</div>
+                                    <div className="text-xs text-zinc-400 mb-4">Deals closed per region</div>
                                     <ResponsiveContainer width="100%" height={220}>
                                         <BarChart data={[
                                             { q: 'Q1', BR: 34, LATAM: 22, US: 41 },
@@ -680,7 +680,7 @@ export default function DataVizShowcase() {
                             <div className="p-6 border-b border-white/5 flex items-center justify-between">
                                 <div>
                                     <div className="text-sm font-bold text-white">AI Data Flow Network</div>
-                                    <div className="text-xs text-zinc-500">Live packet animation — drag any node to reshape the graph</div>
+                                    <div className="text-xs text-zinc-400">Live packet animation — drag any node to reshape the graph</div>
                                 </div>
                                 <div className="flex gap-3 text-xs">
                                     {[{ label: 'Systems', color: EMERALD }, { label: 'Intelligence', color: CYAN }, { label: 'Outputs', color: VIOLET }, { label: 'Revenue', color: AMBER }].map(l => (
@@ -711,7 +711,7 @@ export default function DataVizShowcase() {
                                 <div className="md:col-span-2 bg-zinc-900 border border-white/5 rounded-3xl overflow-hidden flex flex-col">
                                     <div className="p-5 border-b border-white/5 shrink-0">
                                         <div className="text-sm font-bold text-white">3D Predictive Surface — ML Model Comparison</div>
-                                        <div className="text-xs text-zinc-500 mt-0.5">Powered by Plotly.js · Rotate &amp; zoom the surface</div>
+                                        <div className="text-xs text-zinc-400 mt-0.5">Powered by Plotly.js · Rotate &amp; zoom the surface</div>
                                     </div>
                                     <div className="flex-1 min-h-0" style={{ minHeight: 320 }}>
                                         <PlotlySurface />
@@ -726,19 +726,19 @@ export default function DataVizShowcase() {
                                     ].map((m, i) => (
                                         <div key={i} className="bg-zinc-900 border border-white/5 rounded-2xl p-5 relative overflow-hidden flex-1">
                                             <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-20" style={{ background: m.color }} />
-                                            <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-2">{m.label}</div>
+                                            <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-2">{m.label}</div>
                                             <div className="text-3xl font-black text-white mb-1">{m.value}</div>
                                             <div className="flex items-center gap-2">
                                                 <span className="text-emerald-400 text-xs font-bold flex items-center gap-1">
                                                     <TrendingUp className="w-3 h-3" />{m.delta}
                                                 </span>
-                                                <span className="text-zinc-600 text-xs">{m.desc}</span>
+                                                <span className="text-zinc-400 text-xs">{m.desc}</span>
                                             </div>
                                         </div>
                                     ))}
                                     {/* Mini line chart */}
                                     <div className="bg-zinc-900 border border-white/5 rounded-2xl p-5 flex-1">
-                                        <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-3">Model Accuracy Over Training</div>
+                                        <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-3">Model Accuracy Over Training</div>
                                         <ResponsiveContainer width="100%" height={100}>
                                             <LineChart data={Array.from({ length: 20 }, (_, i) => ({
                                                 e: i, a: 60 + i * 1.8 + Math.sin(i) * 3, b: 55 + i * 1.7 + Math.cos(i) * 4
@@ -768,13 +768,13 @@ export default function DataVizShowcase() {
                             <div className="p-5 border-b border-white/5 flex items-center justify-between">
                                 <div>
                                     <div className="text-sm font-bold text-white">Revenue Intelligence Table</div>
-                                    <div className="text-xs text-zinc-500 mt-0.5">Click column headers to sort · Heatmap cells · Embedded sparklines</div>
+                                    <div className="text-xs text-zinc-400 mt-0.5">Click column headers to sort · Heatmap cells · Embedded sparklines</div>
                                 </div>
                                 <div className="flex gap-3 text-[10px]">
                                     {[{ label: 'Low', c: 'rgba(239,68,68,0.4)' }, { label: 'Mid', c: 'rgba(245,158,11,0.4)' }, { label: 'High', c: 'rgba(16,185,129,0.4)' }].map(l => (
                                         <div key={l.label} className="flex items-center gap-1.5">
                                             <span className="w-3 h-3 rounded" style={{ background: l.c }} />
-                                            <span className="text-zinc-500">{l.label}</span>
+                                            <span className="text-zinc-400">{l.label}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -831,7 +831,7 @@ export default function DataVizShowcase() {
                                 </table>
                             </div>
                             {/* Footer summary row */}
-                            <div className="p-5 border-t border-white/5 flex gap-8 text-xs text-zinc-500">
+                            <div className="p-5 border-t border-white/5 flex gap-8 text-xs text-zinc-400">
                                 <span>Total Q4: <strong className="text-white">${TABLE_DATA.reduce((s, r) => s + r.q4, 0).toLocaleString()}K</strong></span>
                                 <span>Avg YoY: <strong className="text-emerald-400">+19.4%</strong></span>
                                 <span>Best region: <strong className="text-white">{TABLE_DATA.sort((a, b) => b.q4 - a.q4)[0].region}</strong></span>
@@ -869,9 +869,9 @@ export default function DataVizShowcase() {
                                     const up = val >= pval;
                                     return (
                                         <div key={m.key} className="bg-zinc-900/60 border border-white/5 rounded-2xl p-4">
-                                            <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">{m.label}</div>
+                                            <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">{m.label}</div>
                                             <div className="text-3xl font-black tabular-nums" style={{ color: m.color }}>
-                                                {val.toFixed(1)}<span className="text-sm font-normal text-zinc-500 ml-1">{m.unit}</span>
+                                                {val.toFixed(1)}<span className="text-sm font-normal text-zinc-400 ml-1">{m.unit}</span>
                                             </div>
                                             <div className={`text-xs mt-1 font-semibold ${up ? 'text-emerald-400' : 'text-rose-400'}`}>
                                                 {up ? '▲' : '▼'} {Math.abs(val - pval).toFixed(1)}
@@ -880,7 +880,7 @@ export default function DataVizShowcase() {
                                     );
                                 })}
                                 <div className="bg-zinc-900/60 border border-white/5 rounded-2xl p-4 mt-auto">
-                                    <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2">Stream Stats</div>
+                                    <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Stream Stats</div>
                                     <div className="text-xs text-zinc-400 space-y-1">
                                         <div className="flex justify-between"><span>Window</span><span className="text-white">60 pts</span></div>
                                         <div className="flex justify-between"><span>Rate</span><span className="text-white">2.5 Hz</span></div>
@@ -970,7 +970,7 @@ export default function DataVizShowcase() {
                                         <div className="text-xs text-zinc-300">{s.nodes}</div>
                                     </div>
                                 ))}
-                                <div className="bg-zinc-900/60 border border-white/5 rounded-xl p-3 text-xs text-zinc-500">
+                                <div className="bg-zinc-900/60 border border-white/5 rounded-xl p-3 text-xs text-zinc-400">
                                     Width of each band = relative data volume flowing through that connection.
                                 </div>
                             </div>

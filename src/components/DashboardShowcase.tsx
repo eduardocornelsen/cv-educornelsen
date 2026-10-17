@@ -219,7 +219,7 @@ export default function DashboardShowcase({
               <div className="w-3 h-3 rounded-full bg-amber-500/80" />
               <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
             </div>
-            <div className="mx-auto px-4 py-1 rounded-md bg-zinc-900 text-xs text-zinc-500 font-mono flex items-center gap-2">
+            <div className="mx-auto px-4 py-1 rounded-md bg-zinc-900 text-xs text-zinc-400 font-mono flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               {activeDashboard.name.toUpperCase()} _ LIVE
             </div>
@@ -332,7 +332,7 @@ export default function DashboardShowcase({
                       <div className="mt-0.5 w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
                       <div>
                         <div className="text-zinc-300">{action.text}</div>
-                        <div className="text-zinc-600 text-xs mt-0.5">{action.time}</div>
+                        <div className="text-zinc-400 text-xs mt-0.5">{action.time}</div>
                       </div>
                     </motion.div>
                   ))}

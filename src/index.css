@@ -90,18 +90,23 @@ body {
   100% { top: 100%; }
 }
 
-@keyframes terminal-glow {
-  0%, 100% { filter: drop-shadow(0 0 6px #00FFFF); }
-  50%       { filter: drop-shadow(0 0 14px #00FFFF) drop-shadow(0 0 28px rgba(0,255,255,0.4)); }
-}
-
-.terminal-glow {
-  animation: terminal-glow 1.5s ease infinite;
-}
-
 .bg-grid-pattern {
   background-image: 
     linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
   background-size: 40px 40px;
+}
+/* Keyboard focus stays visible on every interactive element. */
+:focus-visible {
+  outline: 2px solid #34d399;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

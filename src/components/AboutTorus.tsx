@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Torus, Float } from '@react-three/drei';
 import * as THREE from 'three';
@@ -32,7 +32,7 @@ function TorusModel() {
   });
 
   // Generate particles for magnetic field effect
-  const particleCount = 2000;
+  const particleCount = typeof window !== 'undefined' && window.innerWidth < 768 ? 600 : 1200;
   const positions = useMemo(() => {
     const pos = new Float32Array(particleCount * 3);
     const radius = 1.5;
@@ -56,7 +56,7 @@ function TorusModel() {
   }, []);
 
   return (
-    <Float speed={2} rotationIntensity={0.5} floatIntensity={1.5}>
+    <Float speed={1} rotationIntensity={0.3} floatIntensity={0.8}>
       {/* Solid inner core */}
       <Torus ref={meshRef} args={[1.5, 0.5, 32, 64]}>
         <meshStandardMaterial 
@@ -99,9 +99,25 @@ function TorusModel() {
 }
 
 export default function AboutTorus() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [still] = useState(() => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const [active, setActive] = useState(false);
+
+  // Render only while the About section is on screen and the tab is visible.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let onScreen = false;
+    const update = () => setActive(onScreen && document.visibilityState === 'visible');
+    const obs = new IntersectionObserver(([entry]) => { onScreen = entry.isIntersecting; update(); }, { threshold: 0 });
+    obs.observe(el);
+    document.addEventListener('visibilitychange', update);
+    return () => { obs.disconnect(); document.removeEventListener('visibilitychange', update); };
+  }, []);
+
   return (
-    <div className="w-full h-full absolute inset-0">
-      <Canvas camera={{ position: [0, 0, 6], fov: 45 }}>
+    <div ref={ref} className="w-full h-full absolute inset-0">
+      <Canvas camera={{ position: [0, 0, 6], fov: 45 }} dpr={[1, 1.5]} frameloop={still ? 'demand' : active ? 'always' : 'never'}>
         <ambientLight intensity={0.2} />
         <directionalLight position={[5, 5, 5]} intensity={2} color="#34d399" />
         <pointLight position={[-5, -5, -5]} intensity={1} color="#059669" />

@@ -13,7 +13,7 @@ test.describe('DashboardShowcase component', () => {
   test('Render Dashboard container and headings', async ({ page }) => {
     // These match the props passed in PortfolioEduardo.tsx
     await expect(page.getByText('Live BI & Strategic Reporting')).toBeVisible();
-    await expect(page.getByText('Analytics Command Centers for')).toBeVisible();
+    await expect(page.getByText("Dashboards I've")).toBeVisible();
   });
 
   test('Render all 5 dashboard tabs', async ({ page }) => {

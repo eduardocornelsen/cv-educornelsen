@@ -23,8 +23,8 @@ export function Chatbot({ navVisible = false }: { navVisible?: boolean }) {
   };
 
   // Determine bottom position based on screen size and nav visibility
-  const baseBottom = 24;
-  const navOffset = isMobile && navVisible ? 72 : 0; // Standardize offset to match nav height
+  const baseBottom = isMobile ? 16 : 24;
+  const navOffset = isMobile && navVisible ? 64 : 0; // Height of the mobile section bar
   const bottom = baseBottom + navOffset;
 
   return (
@@ -32,18 +32,19 @@ export function Chatbot({ navVisible = false }: { navVisible?: boolean }) {
       <motion.button
         onClick={toggle}
         title="Ask Eduardo's AI"
+        aria-label="Open the chat assistant"
         animate={{ bottom }}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className="terminal-glow fixed right-6 z-50 flex items-center justify-center cursor-pointer"
+        className="fixed right-4 md:right-6 z-50 flex items-center justify-center cursor-pointer hover:bg-zinc-900 transition-colors"
         style={{
-          width: 60,
-          height: 60,
-          background: '#050505',
-          border: '1px solid #00FFFF',
-          borderRadius: 4,
+          width: isMobile ? 46 : 52,
+          height: isMobile ? 46 : 52,
+          background: '#09090b',
+          border: '1px solid rgba(52, 211, 153, 0.6)',
+          borderRadius: 10,
           fontFamily: 'var(--font-mono)',
-          fontSize: 18,
-          color: '#00FFFF',
+          fontSize: isMobile ? 15 : 16,
+          color: '#34d399',
           letterSpacing: 1,
         }}
       >
