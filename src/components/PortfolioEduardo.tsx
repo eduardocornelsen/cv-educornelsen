@@ -1648,7 +1648,7 @@ export default function PortfolioEduardo() {
                                         <h3 className="text-lg font-bold text-white mb-3">
                                             {proj.title}
                                         </h3>
-                                        <p className="text-zinc-400 text-sm leading-relaxed flex-1 mb-5 line-clamp-4">{proj.desc}</p>
+                                        <div className="flex-1 mb-5"><p className="text-zinc-400 text-sm leading-relaxed line-clamp-4">{proj.desc}</p></div>
                                         <div className="flex flex-wrap gap-2 mb-4">
                                             {proj.tags.map((tag, j) => {
                                                 const logo = TECH_LOGOS[tag];
