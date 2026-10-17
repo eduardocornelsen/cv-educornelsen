@@ -38,17 +38,21 @@ Available for Data Analyst and Analytics Engineering roles. Responds within 24 h
 - Growth Analyst at Estudar com Você (Jun 2016–Aug 2016)
 
 ## Projects
-1. Full-Funnel AI Analytics Platform: governed metrics for AI. 30-model dbt pipeline over real Olist e-commerce orders
+1. Analista IA (analistaia.com.br, site in Portuguese): governed AI analyst for small e-commerce. Plain-language questions answered from tested dbt marts (contribution margin, P&L, channel numbers).
+   The pipeline computes and the AI only reads: read-only SQL with an allowlist, row-level security per tenant, semantic schema with a CI drift test, and a checker that rejects any number not in the query results. The analyst runs in production on a specialty-coffee store via TorraHub; the multi-source ingestion + dbt pipeline is built and tested but not yet scheduled in production. Code is private (client data).
+   Stack: TypeScript, Python, dbt, PostgreSQL, Claude API.
+2. TorraHub & RodeAqui (torrahub.com.br, rodeaqui.com, demos at torrahub.com/demo and rodeaqui.com/demo; sites in Portuguese): multi-tenant e-commerce + ERP SaaS Eduardo built. Live store in production, certified Mercado Pago integration, ~50 admin screens incl. contribution margin by channel, monthly P&L (DRE), cash projection, moving-average cost and roast planning; 18 dbt models generated from one semantic schema with a CI drift test. Stack: Next.js, TypeScript, PostgreSQL/Supabase with RLS, Drizzle, dbt.
+3. Full-Funnel AI Analytics Platform: governed metrics for AI. 30-model dbt pipeline over real Olist e-commerce orders
    plus synthetic Google/Meta/GA4/CRM data, 4 rule-based attribution models, a tested golden layer that AI clients read
-   over MCP instead of recomputing; CI fails on metric drift and checks BigQuery/Snowflake parity.
-   Stack: dbt, DuckDB, BigQuery, Snowflake, MCP, FastAPI. The lead-scoring model is a plumbing demo on synthetic features, not a predictive result.
-2. PunkSQL: Mobile-first SQL learning app, 80 challenges across 8 modules, bilingual EN/PT,
+   over MCP instead of recomputing; CI fails on metric drift (runs on DuckDB; dbt profiles for BigQuery/Snowflake).
+   Stack: dbt, DuckDB, MCP, FastAPI. The lead-scoring model is a plumbing demo on synthetic features, not a predictive result.
+4. PunkSQL: Mobile-first SQL learning app, 112 challenges across 10 modules, bilingual EN/PT,
    SQLite/WASM in-browser, Google OAuth, Vercel. Stack: Next.js 14, TypeScript, sql.js.
-3. RevOps Lead Engine: Autonomous B2B pipeline — XAI lead scoring (0-100), 3-touch outreach,
+5. RevOps Lead Engine: Streamlit RevOps app on synthetic data — rule-based explainable lead scoring (0-100), 3-touch outreach,
    90-day revenue projection with 4 levers, GenAI RevOps Copilot. Stack: Python, LangChain, Streamlit.
-4. Product & UX Analytics — Epic Games: Random Forest (R²=0.392), K-Means, NLP/LDA.
-   Discovered "Hardware Wall Paradox" (−0.133 satisfaction correlation). Final-round candidate at Epic Games.
-5. MusicInsights AI: LangChain + Gemini 2.0 Flash over 160k+ tracks/100 years, <2s query response.
+6. Product & UX Analytics — Epic Games: Random Forest (R²=0.392), K-Means, NLP/LDA.
+   Found a "hardware wall": higher system requirements associated with lower ratings (r = −0.133). Final-round candidate at Epic Games.
+7. MusicInsights AI: LangChain + Gemini 2.0 Flash over 160k+ tracks/100 years, <2s query response.
    Stack: Python, Streamlit, Docker, Plotly.
 
 ## Skills

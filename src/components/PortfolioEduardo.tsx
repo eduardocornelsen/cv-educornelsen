@@ -5,6 +5,8 @@ import { Chatbot } from './chatbot';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
+import analistaIaReadme from '../content/projects/analista-ia/README.md?raw';
+import torrahubReadme from '../content/projects/torrahub/README.md?raw';
 import fullFunnelReadme from '../content/projects/full-funnel-ai-analytics/README.md?raw';
 import punksqlReadme from '../content/projects/punksql/README.md?raw';
 import leadEngineReadme from '../content/projects/lead_engine/README.md?raw';
@@ -452,14 +454,60 @@ export type ProjectData = {
     media: MediaItem[];
     gradient: string;
     tags: string[];
-    github: string;
+    // Absent when the code is private (client work).
+    github?: string;
     liveUrl?: string;
+    extraLinks?: { label: string; url: string }[];
     presentationUrl?: string;
     readme?: string;
     images?: Record<string, string>;
 };
 
 const PROJECTS: ProjectData[] = [
+    {
+        title: "Analista IA — Governed AI Analyst",
+        outcome: "Live on a Real Store · Code Private",
+        desc: "Store owners ask in plain language and get contribution margin, P&L and channel numbers from tested dbt marts. The pipeline computes and the AI only reads: read-only SQL with an allowlist, row-level security per tenant, a semantic schema that fails CI on drift, and a checker that rejects any number not in the query results. The analyst runs in production on a specialty-coffee store; the multi-source ingestion pipeline is built and tested, not yet scheduled.",
+        media: [
+            { type: 'image', src: new URL('../assets/projects/analista-ia/demo.webp', import.meta.url).href },
+            { type: 'image', src: new URL('../assets/projects/analista-ia/home.webp', import.meta.url).href },
+        ],
+        gradient: "from-emerald-500 to-teal-500",
+        tags: ["dbt", "PostgreSQL", "TypeScript", "Claude"],
+        liveUrl: "https://www.analistaia.com.br",
+        readme: analistaIaReadme,
+        images: {
+            'demo.webp': new URL('../assets/projects/analista-ia/demo.webp', import.meta.url).href,
+            'home.webp': new URL('../assets/projects/analista-ia/home.webp', import.meta.url).href,
+        },
+    },
+    {
+        title: "TorraHub & RodeAqui — E-commerce + ERP with Built-in Analytics",
+        outcome: "Live Store · Mercado Pago Certified · 18 dbt Models",
+        desc: "A multi-tenant SaaS I built for specialty-coffee brands (TorraHub) and small online stores (RodeAqui): storefront, subscriptions, inventory and about 50 admin screens, including contribution margin by channel, monthly P&L, cash projection, moving-average cost and roast planning. Next.js on Postgres/Supabase with row-level security; 18 dbt models generated from one semantic schema, with a CI test against drift. Sites and demos are in Portuguese.",
+        media: [
+            { type: 'image', src: new URL('../assets/projects/torrahub/painel-resumo.webp', import.meta.url).href },
+            { type: 'image', src: new URL('../assets/projects/torrahub/analista.webp', import.meta.url).href },
+            { type: 'image', src: new URL('../assets/projects/torrahub/diretoria.webp', import.meta.url).href },
+            { type: 'image', src: new URL('../assets/projects/torrahub/home.webp', import.meta.url).href },
+            { type: 'image', src: new URL('../assets/projects/torrahub/rodeaqui-home.webp', import.meta.url).href },
+            { type: 'image', src: new URL('../assets/projects/torrahub/rodeaqui-diretoria.webp', import.meta.url).href },
+        ],
+        gradient: "from-amber-500 to-emerald-500",
+        tags: ["Next.js", "PostgreSQL", "Supabase", "dbt"],
+        liveUrl: "https://torrahub.com/demo",
+        extraLinks: [
+            { label: "TorraHub", url: "https://torrahub.com.br" },
+            { label: "RodeAqui", url: "https://rodeaqui.com" },
+        ],
+        readme: torrahubReadme,
+        images: {
+            'painel-resumo.webp': new URL('../assets/projects/torrahub/painel-resumo.webp', import.meta.url).href,
+            'analista.webp': new URL('../assets/projects/torrahub/analista.webp', import.meta.url).href,
+            'diretoria.webp': new URL('../assets/projects/torrahub/diretoria.webp', import.meta.url).href,
+            'rodeaqui-home.webp': new URL('../assets/projects/torrahub/rodeaqui-home.webp', import.meta.url).href,
+        },
+    },
     {
         title: "Full-Funnel AI Analytics Platform",
         outcome: "Zero Metric Drift · 4 Attribution Models",
@@ -476,7 +524,7 @@ const PROJECTS: ProjectData[] = [
             { type: 'image', src: new URL('../assets/projects/full-funnel-ai-analytics/marketing-dashboard.webp', import.meta.url).href },
         ],
         gradient: "from-emerald-500 to-cyan-500",
-        tags: ["dbt", "BigQuery", "MCP", "React", "TypeScript", "Claude", "Semantic Layer"],
+        tags: ["dbt", "DuckDB", "MCP", "Python", "Semantic Layer"],
         github: "https://github.com/eduardocornelsen/full-funnel-ai-analytics",
         presentationUrl: "https://drive.google.com/file/d/1GfNopUxsnO8gr29wYX1d5ldCjfeyh-fJ/view?usp=drive_link",
         readme: fullFunnelReadme,
@@ -489,7 +537,7 @@ const PROJECTS: ProjectData[] = [
     {
         title: "Product & UX Analytics (Epic Games)",
         outcome: "Final-Round Candidate · Strategic Audit",
-        desc: "What actually drives player satisfaction on the Epic Games Store? Using Random Forest (R²=0.392), K-Means clustering, and NLP (LDA), I uncovered the 'Hardware Wall Paradox' — proving high RAM requirements actively degrades satisfaction scores (-0.133 correlation). Delivered a live Streamlit dashboard and a 2026 Strategic Roadmap.",
+        desc: "What drives player ratings on the Epic Games Store? A Random Forest (R²=0.392), K-Means segments and LDA topic modeling suggest a 'hardware wall': higher system requirements are associated with lower ratings (r = −0.133), so price and specs explain only part of satisfaction. Delivered a live Streamlit dashboard and a 2026 roadmap.",
         media: [
             { type: 'image', src: new URL('../assets/projects/epic-store-analysis/cover-epic.webp', import.meta.url).href },
         ],
@@ -512,13 +560,13 @@ const PROJECTS: ProjectData[] = [
     },
     {
         title: "RevOps Lead Engine",
-        outcome: "Autonomous B2B Pipeline",
-        desc: "SDR teams spend 60% of their time on tasks that shouldn't require humans. I built an autonomous B2B pipeline with AI Copilot for predictive revenue modeling, explainable AI (XAI) scoring, and NDR analytics — automating enrichment, routing, and lead scoring end-to-end.",
+        outcome: "10-Module Streamlit App · Synthetic Data",
+        desc: "A RevOps command center that runs the B2B funnel end to end on synthetic (Faker) data: ICP-driven discovery and enrichment, rule-based lead scoring that shows the reason for every point, 3-touch outreach, a 90-day revenue scenario model with 4 levers, and post-sales NDR and ARR waterfall analytics, plus an LLM copilot for pipeline questions.",
         media: [
             { type: 'image', src: new URL('../assets/projects/lead_engine/cover-small.jpg', import.meta.url).href },
         ],
         gradient: "from-violet-500 to-purple-500",
-        tags: ["XAI", "LangChain", "SDR Automation", "Python"],
+        tags: ["Python", "Streamlit", "FastAPI", "LangChain"],
         github: "https://github.com/eduardocornelsen/revops_lead_engine/",
         liveUrl: "https://revops-lead-engine.streamlit.app/",
         readme: leadEngineReadme,
@@ -528,14 +576,14 @@ const PROJECTS: ProjectData[] = [
     },
     {
         title: "PunkSQL",
-        outcome: "Bilingual · 80 Challenges · Mobile-First",
-        desc: "SQL shouldn't require a textbook. I built a mobile-first learning platform with in-browser SQL execution (SQLite/WASM), Google OAuth, XP/levels/achievements — 80 challenges across 8 modules, deployed on Vercel with Next.js.",
+        outcome: "Bilingual · 112 Challenges · Mobile-First",
+        desc: "SQL shouldn't require a textbook. I built a mobile-first learning platform with in-browser SQL execution (SQLite/WASM), Google OAuth and XP/levels/achievements: 112 challenges across 10 modules, from SELECT to CTEs and DDL/DML, deployed on Vercel with Next.js.",
         media: [
-            { type: 'video', src: new URL('../assets/projects/punksql/demo-iphone.mp4', import.meta.url).href },
+            { type: 'video', src: new URL('../assets/projects/punksql/demo-iphone.mp4', import.meta.url).href, contain: true },
         ],
         gradient: "from-rose-500 to-pink-500",
-        tags: ["Next.js", "TypeScript", "SQLite/WASM", "OAuth", "Vercel"],
-        github: "https://github.com/eduardocornelsen/",
+        tags: ["Next.js", "TypeScript", "SQLite/WASM", "Vercel"],
+        github: "https://github.com/eduardocornelsen/punksql",
         liveUrl: "https://punksql.vercel.app/",
         readme: punksqlReadme,
         images: {},
@@ -549,7 +597,7 @@ const PROJECTS: ProjectData[] = [
             { type: 'image', src: new URL('../assets/projects/portfolio-infra/lang-fuse.webp', import.meta.url).href },
         ],
         gradient: "from-slate-500 to-zinc-600",
-        tags: ["Google Cloud Run", "Docker", "GitHub Actions", "Gemini", "LangFuse", "React", "TypeScript", "Vitest", "Playwright"],
+        tags: ["Google Cloud Run", "Docker", "GitHub Actions", "Gemini", "LangFuse", "Playwright"],
         github: "https://github.com/eduardocornelsen/cv-educornelsen",
         liveUrl: "https://eduardocornelsen.com",
         readme: portfolioInfraReadme,
@@ -558,7 +606,7 @@ const PROJECTS: ProjectData[] = [
     {
         title: "MusicInsights AI",
         outcome: "160k+ Tracks · 100 Years of Data",
-        desc: "What separates a hit from a miss? I analyzed 160k+ tracks spanning 100 years of music evolution using an AI consultant powered by LangChain and Gemini 3 Flash — surfacing interactive trend visualizations and answering music insight questions in natural language.",
+        desc: "What separates a hit from a miss? I analyzed 160k+ tracks spanning 100 years of music evolution using an AI consultant powered by LangChain and Gemini 2.0 Flash — surfacing interactive trend visualizations and answering music insight questions in natural language.",
         media: [
             { type: 'image', src: new URL('../assets/projects/spotify-project/dashboard.webp', import.meta.url).href },
             { type: 'image', src: new URL('../assets/projects/spotify-project/chatbot.webp', import.meta.url).href },
@@ -566,7 +614,7 @@ const PROJECTS: ProjectData[] = [
             { type: 'image', src: new URL('../assets/projects/spotify-project/Architecture.png', import.meta.url).href, contain: true },
         ],
         gradient: "from-sky-500 to-blue-500",
-        tags: ["LangChain", "Gemini 3 Flash", "Streamlit", "Pandas"],
+        tags: ["LangChain", "Gemini", "Streamlit", "Pandas"],
         github: "https://github.com/eduardocornelsen/music-insights-ai",
         liveUrl: "https://spotify-music-insights-ai.streamlit.app/",
         readme: musicReadme,
@@ -1646,7 +1694,7 @@ export default function PortfolioEduardo() {
                             >
                                 <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${proj.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
                                 <div className="relative bg-zinc-900 group-hover:bg-zinc-900/95 rounded-[calc(1.5rem-1px)] h-full flex flex-col transition-colors duration-300 overflow-hidden">
-                                    <MediaCarousel media={proj.media} containerClasses={`w-full ${['PunkSQL', 'Full-Funnel AI Analytics Platform'].includes(proj.title) ? 'aspect-[9/16]' : 'aspect-video'} border-b border-white/5 bg-black`} />
+                                    <MediaCarousel media={proj.media} containerClasses="w-full aspect-video border-b border-white/5 bg-black" />
                                     <div className="p-7 flex-1 flex flex-col">
                                         <div className="flex items-start justify-between mb-4">
                                             <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full bg-gradient-to-r ${proj.gradient} bg-opacity-10 text-white/80 border border-white/10`}>
@@ -1688,7 +1736,7 @@ export default function PortfolioEduardo() {
                                                     className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all text-emerald-400 cursor-pointer whitespace-nowrap"
                                                 >
                                                     <Zap className="w-3 h-3" />
-                                                    {proj.title === 'PunkSQL' ? 'Play' : 'Live'}
+                                                    {proj.title === 'PunkSQL' ? 'Play' : proj.extraLinks ? 'Demo' : 'Live'}
                                                 </a>
                                             )}
                                             {proj.presentationUrl && (
@@ -1706,19 +1754,39 @@ export default function PortfolioEduardo() {
                                                     Slides
                                                 </a>
                                             )}
-                                            <a 
-                                                href={proj.github} 
-                                                target="_blank" 
-                                                rel="noreferrer" 
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    trackEvent('Project', 'Click GitHub', proj.title, { project_name: proj.title });
-                                                }}
-                                                className="text-zinc-400 hover:text-white hover:scale-110 active:scale-95 transition-all cursor-pointer p-1.5"
-                                                title="View GitHub Repository"
-                                            >
-                                                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                                            </a>
+                                            {proj.extraLinks?.map(link => (
+                                                <a 
+                                                    key={link.url}
+                                                    href={link.url} 
+                                                    target="_blank" 
+                                                    rel="noreferrer" 
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        trackEvent('Project', 'Click Extra Link', link.label, { project_name: proj.title });
+                                                    }}
+                                                    className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-zinc-300 cursor-pointer whitespace-nowrap"
+                                                >
+                                                    <Globe className="w-3 h-3" />
+                                                    {link.label}
+                                                </a>
+                                            ))}
+                                            {proj.github ? (
+                                                <a 
+                                                    href={proj.github} 
+                                                    target="_blank" 
+                                                    rel="noreferrer" 
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        trackEvent('Project', 'Click GitHub', proj.title, { project_name: proj.title });
+                                                    }}
+                                                    className="text-zinc-400 hover:text-white hover:scale-110 active:scale-95 transition-all cursor-pointer p-1.5"
+                                                    title="View GitHub Repository"
+                                                >
+                                                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                                                </a>
+                                            ) : (
+                                                <span className="text-[10px] text-zinc-500 whitespace-nowrap" title="Client work: the code is private">Code private</span>
+                                            )}
                                             <div className="flex items-center gap-1.5 px-2 py-1 whitespace-nowrap ml-auto">
                                                 <span className={`text-transparent bg-clip-text bg-gradient-to-r ${proj.gradient}`}>View Details</span>
                                                 <ArrowRight className="w-3 h-3 text-emerald-400" />
@@ -2033,16 +2101,31 @@ export default function PortfolioEduardo() {
                                             {selectedProject.title === 'PunkSQL' ? 'Play' : 'Live Demo'}
                                         </a>
                                     )}
-                                    <a 
-                                        href={selectedProject.github} 
-                                        target="_blank" 
-                                        rel="noreferrer" 
-                                        className="flex-1 min-w-[160px] px-5 py-2.5 bg-zinc-800 text-white font-semibold rounded-full hover:bg-zinc-700 transition-colors flex items-center justify-center gap-2 cursor-pointer border border-white/10 text-sm order-2"
-                                        onClick={() => trackEvent('Project Modal', 'Click GitHub', selectedProject.title, { project_name: selectedProject.title })}
-                                    >
-                                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                                        GitHub
-                                    </a>
+                                    {selectedProject.github && (
+                                        <a 
+                                            href={selectedProject.github} 
+                                            target="_blank" 
+                                            rel="noreferrer" 
+                                            className="flex-1 min-w-[160px] px-5 py-2.5 bg-zinc-800 text-white font-semibold rounded-full hover:bg-zinc-700 transition-colors flex items-center justify-center gap-2 cursor-pointer border border-white/10 text-sm order-2"
+                                            onClick={() => trackEvent('Project Modal', 'Click GitHub', selectedProject.title, { project_name: selectedProject.title })}
+                                        >
+                                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                                            GitHub
+                                        </a>
+                                    )}
+                                    {selectedProject.extraLinks?.map(link => (
+                                        <a 
+                                            key={link.url}
+                                            href={link.url} 
+                                            target="_blank" 
+                                            rel="noreferrer" 
+                                            className="flex-1 min-w-[160px] px-5 py-2.5 bg-zinc-800 text-white font-semibold rounded-full hover:bg-zinc-700 transition-colors flex items-center justify-center gap-2 cursor-pointer border border-white/10 text-sm order-2"
+                                            onClick={() => trackEvent('Project Modal', 'Click Extra Link', link.label, { project_name: selectedProject.title })}
+                                        >
+                                            <Globe className="w-4 h-4" />
+                                            {link.label}
+                                        </a>
+                                    ))}
                                     {selectedProject.presentationUrl && (
                                         <a 
                                             href={selectedProject.presentationUrl} 

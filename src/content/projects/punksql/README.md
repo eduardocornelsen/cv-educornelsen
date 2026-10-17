@@ -16,7 +16,7 @@ The editor is designed specifically for mobile: swipe anywhere on the screen to 
 
 ## Learning Path
 
-Eight sequential modules, each unlocking progressively as the previous is completed:
+Ten sequential modules, from SELECT to CTEs and DDL/DML, each unlocking progressively as the previous is completed:
 
 ```
 Module 1 · first_query    SELECT, FROM, DISTINCT, LIMIT, COUNT
@@ -29,13 +29,13 @@ Module 7 · window_fn      ROW_NUMBER, RANK, DENSE_RANK, LAG/LEAD, PARTITION BY
 Module 8 · ctes           WITH, chained CTEs, CASE WHEN, recursive patterns
 ```
 
-Each module has 10 SQL challenges with real validation against expected output — column order, row count, and values all checked. Plus quiz questions and swipeable flashcards for theory reinforcement.
+Every module has SQL challenges with real validation against expected output — column order, row count, and values all checked. Plus quiz questions and swipeable flashcards for theory reinforcement.
 
 ---
 
 ## Gamification
 
-Progress is earned, not gamed. XP is granted only on first solve — no farming. Reaching a new level triggers a full-screen animation with a synthesized fanfare (Tone.js). Ten achievements unlock across the curriculum: from running your first query to solving all 80 challenges.
+Progress is earned, not gamed. XP is granted only on first solve — no farming. Reaching a new level triggers a full-screen animation with a synthesized fanfare (Tone.js). Ten achievements unlock across the curriculum: from running your first query to solving all 112 challenges.
 
 A daily challenge rotates every day with a +100 XP bonus, creating a reason to return.
 

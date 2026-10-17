@@ -2,7 +2,7 @@
 
 The conventional wisdom in game development: better graphics equals higher ratings. Invest in a 4K AAA title, and players will reward you with 90+ review scores.
 
-**The data proves the opposite.**
+**The data points the other way.**
 
 ---
 
