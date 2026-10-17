@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif">
+  <rect width="1600" height="900" fill="#0f1513"/>
+  <g fill="none" stroke="#1f2b27" stroke-width="1">
+    <path d="M0 150H1600M0 300H1600M0 450H1600M0 600H1600M0 750H1600"/>
+  </g>
+  <text x="80" y="110" fill="#8fa39b" font-size="26" letter-spacing="4">PIPELINE COMPUTES · AI ONLY READS</text>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0L10 5L0 10z" fill="#3fb98a"/></marker>
+  </defs>
+  <g font-size="30" font-weight="600" fill="#e8efec">
+    <rect x="80" y="200" width="300" height="190" rx="14" fill="#16201d" stroke="#2c3b36" stroke-width="2"/>
+    <text x="110" y="255">Sources</text>
+    <text x="110" y="305" font-size="22" font-weight="400" fill="#a9bab3">ERP API</text>
+    <text x="110" y="340" font-size="22" font-weight="400" fill="#a9bab3">E-commerce DB</text>
+    <text x="110" y="375" font-size="22" font-weight="400" fill="#a9bab3">Payments</text>
+
+    <rect x="460" y="200" width="300" height="190" rx="14" fill="#16201d" stroke="#2c3b36" stroke-width="2"/>
+    <text x="490" y="255">Ingestion</text>
+    <text x="490" y="305" font-size="22" font-weight="400" fill="#a9bab3">Idempotent landing</text>
+    <text x="490" y="340" font-size="22" font-weight="400" fill="#a9bab3">Encrypted credentials</text>
+    <text x="490" y="375" font-size="22" font-weight="400" fill="#a9bab3">Sync state</text>
+
+    <rect x="840" y="200" width="300" height="190" rx="14" fill="#16201d" stroke="#2c3b36" stroke-width="2"/>
+    <text x="870" y="255">dbt on Postgres</text>
+    <text x="870" y="305" font-size="22" font-weight="400" fill="#a9bab3">Cross-source dedup</text>
+    <text x="870" y="340" font-size="22" font-weight="400" fill="#a9bab3">Cents until the mart</text>
+    <text x="870" y="375" font-size="22" font-weight="400" fill="#a9bab3">Margin · P&amp;L marts</text>
+
+    <rect x="1220" y="200" width="300" height="190" rx="14" fill="#16201d" stroke="#2c3b36" stroke-width="2"/>
+    <text x="1250" y="255">Semantic schema</text>
+    <text x="1250" y="305" font-size="22" font-weight="400" fill="#a9bab3">Virtual CTEs</text>
+    <text x="1250" y="340" font-size="22" font-weight="400" fill="#a9bab3">No tenant column</text>
+    <text x="1250" y="375" font-size="22" font-weight="400" fill="#a9bab3">CI fails on drift</text>
+
+    <rect x="1220" y="520" width="300" height="190" rx="14" fill="#16201d" stroke="#3fb98a" stroke-width="2"/>
+    <text x="1250" y="575">AI analyst</text>
+    <text x="1250" y="625" font-size="22" font-weight="400" fill="#a9bab3">SQL allowlist</text>
+    <text x="1250" y="660" font-size="22" font-weight="400" fill="#a9bab3">READ ONLY · timeout</text>
+    <text x="1250" y="695" font-size="22" font-weight="400" fill="#a9bab3">Row-level security</text>
+
+    <rect x="840" y="520" width="300" height="190" rx="14" fill="#16201d" stroke="#3fb98a" stroke-width="2"/>
+    <text x="870" y="575">Number checker</text>
+    <text x="870" y="625" font-size="22" font-weight="400" fill="#a9bab3">Every figure the model</text>
+    <text x="870" y="660" font-size="22" font-weight="400" fill="#a9bab3">writes must match a</text>
+    <text x="870" y="695" font-size="22" font-weight="400" fill="#a9bab3">query result</text>
+
+    <rect x="460" y="520" width="300" height="190" rx="14" fill="#1b2b25" stroke="#3fb98a" stroke-width="2"/>
+    <text x="490" y="575">Answer</text>
+    <text x="490" y="625" font-size="22" font-weight="400" fill="#a9bab3">“Contribution margin</text>
+    <text x="490" y="660" font-size="22" font-weight="400" fill="#a9bab3">by channel, last 30</text>
+    <text x="490" y="695" font-size="22" font-weight="400" fill="#a9bab3">days?”</text>
+
+    <rect x="80" y="520" width="300" height="190" rx="14" fill="#16201d" stroke="#2c3b36" stroke-width="2" stroke-dasharray="8 6"/>
+    <text x="110" y="575">Golden metrics</text>
+    <text x="110" y="625" font-size="22" font-weight="400" fill="#a9bab3">Frozen days</text>
+    <text x="110" y="660" font-size="22" font-weight="400" fill="#a9bab3">Regression check</text>
+    <text x="110" y="695" font-size="22" font-weight="400" fill="#a9bab3">on every build</text>
+  </g>
+  <g stroke="#3fb98a" stroke-width="3" fill="none" marker-end="url(#a)">
+    <path d="M384 295H452"/><path d="M764 295H832"/><path d="M1144 295H1212"/>
+    <path d="M1370 394V512"/><path d="M1216 615H1148"/><path d="M836 615H768"/>
+  </g>
+  <path d="M990 394C990 450 230 450 230 512" stroke="#4b5f58" stroke-width="2" fill="none" stroke-dasharray="6 6"/>
+  <text x="80" y="810" fill="#8fa39b" font-size="24">Analyst live for a specialty-coffee e-commerce · TypeScript · Python · dbt · PostgreSQL</text>
+</svg>
