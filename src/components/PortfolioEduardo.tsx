@@ -272,9 +272,9 @@ const SKILL_ITEMS = [
         desc: "Designing robust ETL/ELT workflows and scalable data models.",
         tags: ["PostgreSQL", "Python", "dbt Core", "Semantic Layer", "Pandas", "DuckDB", "Git", "GitHub Actions", "Docker", "Bash"],
         contextItems: [
-            { tool: "PostgreSQL",      context: "Primary OLTP source · Torus client stack" },
+            { tool: "PostgreSQL",      context: "Row-level security · read-only analyst role · coffee e-commerce data layer" },
             { tool: "Python",          context: "Core language · ETL, automation, modeling" },
-            { tool: "dbt Core",         context: "29 models · Medallion Architecture · 2.2M rows" },
+            { tool: "dbt Core",         context: "Full-Funnel (30 models) · coffee e-commerce data layer · Postgres & DuckDB" },
             { tool: "Semantic Layer",  context: "dbt MetricFlow · metric governance" },
             { tool: "Pandas / Polars", context: "Data transformation & ELT processing" },
             { tool: "DuckDB",          context: "Local execution layer · Full-Funnel analytics pipeline" },
@@ -293,7 +293,7 @@ const SKILL_ITEMS = [
         contextItems: [
             { tool: "BigQuery",   context: "Primary warehouse · Torus client stack" },
             { tool: "DuckDB",     context: "Local analytics engine · embedded warehouse · Full-Funnel AI Platform" },
-            { tool: "Databricks", context: "PySpark notebooks · TripleTen lakehouse · 2× fundamentals certs" },
+            { tool: "Databricks", context: "PySpark notebooks · TripleTen lakehouse · 2× Academy accreditations" },
             { tool: "PySpark",    context: "Feature engineering · Databricks environment" },
             { tool: "GCP",        context: "Cloud Run, Storage · supporting BigQuery workflows" },
             { tool: "Snowflake",  context: "Architecture & design patterns · studied" },
@@ -304,15 +304,14 @@ const SKILL_ITEMS = [
         icon: <Bot className="w-5 h-5" />,
         title: "AI Agents & Infrastructure",
         desc: "Building LLM-powered agents and natural language data interfaces.",
-        tags: ["Google Antigravity", "Claude Code", "Gemini Flash", "LangChain", "MCP", "FastAPI", "Scikit-Learn", "Langfuse"],
+        tags: ["Claude Code", "Gemini Flash", "LangChain", "MCP", "FastAPI", "Scikit-Learn", "Langfuse"],
         contextItems: [
-            { tool: "Google Antigravity", context: "Primary agentic IDE · Claude Code + Gemini Flash" },
-            { tool: "Claude Code",        context: "Agentic coding · Antigravity, Desktop & Mobile" },
-            { tool: "Gemini Flash",       context: "Portfolio chatbot · Antigravity IDE · TripleTen agents" },
+            { tool: "Claude Code",        context: "Agentic coding · CLI, Desktop & Mobile" },
+            { tool: "Gemini Flash",       context: "Portfolio chatbot · TripleTen agents" },
             { tool: "LangChain",          context: "Chat with Data agents · TripleTen" },
-            { tool: "MCP",                context: "7 servers · Full-Funnel AI Platform" },
-            { tool: "FastAPI",            context: "XGBoost lead scoring endpoint" },
-            { tool: "Scikit-Learn",       context: "XGBoost lead scoring model" },
+            { tool: "MCP",                context: "6 servers · Full-Funnel AI Platform" },
+            { tool: "FastAPI",            context: "Model-serving endpoint · Full-Funnel AI Platform" },
+            { tool: "Scikit-Learn",       context: "Random Forest, K-Means · Epic Games analysis" },
             { tool: "Langfuse",           context: "LLM observability · portfolio chatbot" },
         ],
         gradient: "from-violet-500 to-purple-500",
@@ -321,13 +320,11 @@ const SKILL_ITEMS = [
         icon: <Zap className="w-5 h-5" />,
         title: "Automation & Revenue Ops",
         desc: "Eliminating manual work through intelligent workflow orchestration.",
-        tags: ["n8n", "Python Scripts", "API Integration", "NotebookLM", "Obsidian"],
+        tags: ["n8n", "Python Scripts", "API Integration"],
         contextItems: [
             { tool: "n8n",            context: "SDR automation workflows · Torus clients" },
             { tool: "Python Scripts", context: "ETL automation · reporting pipelines" },
             { tool: "API Integration",context: "Multi-platform data connectors" },
-            { tool: "NotebookLM",     context: "Research & knowledge synthesis" },
-            { tool: "Obsidian",       context: "Systems documentation & knowledge base" },
         ],
         gradient: "from-amber-500 to-orange-500",
     },
@@ -465,8 +462,8 @@ export type ProjectData = {
 const PROJECTS: ProjectData[] = [
     {
         title: "Full-Funnel AI Analytics Platform",
-        outcome: "2.2M+ Rows · 4 Attribution Models",
-        desc: "Revenue teams flying blind on attribution? I built a 29-model dbt pipeline with 4 attribution models that turned 2.2M+ rows into a natural language query layer — delivering answers in 15 seconds that used to take days. Powered by MCP, dbt Semantic Layer, and a real-time React dashboard.",
+        outcome: "Zero Metric Drift · 4 Attribution Models",
+        desc: "Ask an AI for ROAS and you get a different number every time. I built a dbt pipeline (real Olist e-commerce orders + synthetic Google/Meta/GA4/CRM data) where every metric is defined once, pre-computed into a tested golden layer, and read — never recomputed — by AI clients over MCP and by dashboards. CI fails if any number drifts or goes stale, and BigQuery and Snowflake must agree.",
         media: [
             { type: 'video', src: new URL('../assets/projects/full-funnel-ai-analytics/open-query.mp4', import.meta.url).href, contain: true },
             { type: 'image', src: new URL('../assets/projects/full-funnel-ai-analytics/full_funnel_architecture_flow.webp', import.meta.url).href },
@@ -487,36 +484,6 @@ const PROJECTS: ProjectData[] = [
             'architecture.webp': new URL('../assets/projects/full-funnel-ai-analytics/full_funnel_architecture_flow.webp', import.meta.url).href,
             'open-query.png': new URL('../assets/projects/full-funnel-ai-analytics/open-query.png', import.meta.url).href,
             'dashboard.webp': new URL('../assets/projects/full-funnel-ai-analytics/marketing-dashboard.webp', import.meta.url).href,
-        },
-    },
-    {
-        title: "PunkSQL",
-        outcome: "Bilingual · 80 Challenges · Mobile-First",
-        desc: "SQL shouldn't require a textbook. I built a mobile-first learning platform with in-browser SQL execution (SQLite/WASM), Google OAuth, XP/levels/achievements — 80 challenges across 8 modules, deployed on Vercel with Next.js.",
-        media: [
-            { type: 'video', src: new URL('../assets/projects/punksql/demo-iphone.mp4', import.meta.url).href },
-        ],
-        gradient: "from-rose-500 to-pink-500",
-        tags: ["Next.js", "TypeScript", "SQLite/WASM", "OAuth", "Vercel"],
-        github: "https://github.com/eduardocornelsen/",
-        liveUrl: "https://punksql.vercel.app/",
-        readme: punksqlReadme,
-        images: {},
-    },
-    {
-        title: "RevOps Lead Engine",
-        outcome: "Autonomous B2B Pipeline",
-        desc: "SDR teams spend 60% of their time on tasks that shouldn't require humans. I built an autonomous B2B pipeline with AI Copilot for predictive revenue modeling, explainable AI (XAI) scoring, and NDR analytics — automating enrichment, routing, and lead scoring end-to-end.",
-        media: [
-            { type: 'image', src: new URL('../assets/projects/lead_engine/cover-small.jpg', import.meta.url).href },
-        ],
-        gradient: "from-violet-500 to-purple-500",
-        tags: ["XAI", "LangChain", "SDR Automation", "Python"],
-        github: "https://github.com/eduardocornelsen/revops_lead_engine/",
-        liveUrl: "https://revops-lead-engine.streamlit.app/",
-        readme: leadEngineReadme,
-        images: {
-            'cover.jpg': new URL('../assets/projects/lead_engine/cover-small.jpg', import.meta.url).href,
         },
     },
     {
@@ -542,6 +509,36 @@ const PROJECTS: ProjectData[] = [
             'vocabulary.webp':        new URL('../assets/projects/epic-store-analysis/vocabulary.webp', import.meta.url).href,
             'seasonality_check.webp': new URL('../assets/projects/epic-store-analysis/seasonality_check.webp', import.meta.url).href,
         },
+    },
+    {
+        title: "RevOps Lead Engine",
+        outcome: "Autonomous B2B Pipeline",
+        desc: "SDR teams spend 60% of their time on tasks that shouldn't require humans. I built an autonomous B2B pipeline with AI Copilot for predictive revenue modeling, explainable AI (XAI) scoring, and NDR analytics — automating enrichment, routing, and lead scoring end-to-end.",
+        media: [
+            { type: 'image', src: new URL('../assets/projects/lead_engine/cover-small.jpg', import.meta.url).href },
+        ],
+        gradient: "from-violet-500 to-purple-500",
+        tags: ["XAI", "LangChain", "SDR Automation", "Python"],
+        github: "https://github.com/eduardocornelsen/revops_lead_engine/",
+        liveUrl: "https://revops-lead-engine.streamlit.app/",
+        readme: leadEngineReadme,
+        images: {
+            'cover.jpg': new URL('../assets/projects/lead_engine/cover-small.jpg', import.meta.url).href,
+        },
+    },
+    {
+        title: "PunkSQL",
+        outcome: "Bilingual · 80 Challenges · Mobile-First",
+        desc: "SQL shouldn't require a textbook. I built a mobile-first learning platform with in-browser SQL execution (SQLite/WASM), Google OAuth, XP/levels/achievements — 80 challenges across 8 modules, deployed on Vercel with Next.js.",
+        media: [
+            { type: 'video', src: new URL('../assets/projects/punksql/demo-iphone.mp4', import.meta.url).href },
+        ],
+        gradient: "from-rose-500 to-pink-500",
+        tags: ["Next.js", "TypeScript", "SQLite/WASM", "OAuth", "Vercel"],
+        github: "https://github.com/eduardocornelsen/",
+        liveUrl: "https://punksql.vercel.app/",
+        readme: punksqlReadme,
+        images: {},
     },
     {
         title: "Portfolio Infrastructure & AI Chatbot",
@@ -582,27 +579,17 @@ const PROJECTS: ProjectData[] = [
     }
 ];
 
-const EXPERIENCES = [
+const EXPERIENCES: { role: string; badge?: string; company: string; period: string; logo: string; intro?: string; bullets: string[] }[] = [
     {
-        role: "Data Science & Analytics Residency",
-        badge: "Training Program",
-        company: "TripleTen · Data Science Program",
-        period: "Jul 2025 - Present",
-        logo: new URL('../assets/logos/tripleten.png', import.meta.url).href,
-        intro: "Enrolled in a 700h+ intensive program in Data Science, ML, and AI — delivering 16 end-to-end projects on real business problems.",
-        bullets: [
-            "Built 'Chat with Data' AI agents using LangChain, LangGraph, and Gemini/Claude APIs — enabling natural language querying over structured datasets.",
-            "Consolidated 200,000+ records to model churn patterns using statistical forecasting, surfacing retention levers and LTV drivers.",
-            "Worked with Databricks (PySpark, notebooks) for product analytics and feature engineering in a lakehouse environment."
-        ]
-    },
-    {
-        role: "Business Intelligence & Analytics Lead",
+        role: "Data Analyst & Analytics Engineer (Independent)",
         company: "Torus Analytics · Remote",
         period: "Jul 2021 - Present",
         logo: new URL('../assets/logos/torus-logo.svg', import.meta.url).href,
-        intro: "Independent analytics consultancy serving SMB clients across automotive, retail, agribusiness, and hospitality.",
+        intro: "Independent analytics practice serving SMBs across e-commerce, retail, automotive, agribusiness, and hospitality.",
         bullets: [
+            "Built the data layer for a live specialty-coffee e-commerce and subscription business: Postgres with row-level security, 18 dbt models generated from one semantic schema (a CI test fails on drift), contribution margin by sales channel, monthly P&L, moving-average cost of goods.",
+            "Shipped an AI analyst that answers business questions in plain language over SQL. The pipeline computes, the model only reads: read-only database role, SQL allowlist, per-tenant RLS, query timeouts, and a checker that verifies every number the model writes against the query results.",
+            "Built a multi-source ingestion + dbt pipeline (ERP API and e-commerce database) with explicit cross-source deduplication, integer-cents money handling, and golden-metric regression checks.",
             "Built 20+ Looker Studio dashboards integrating 10+ data sources (CRMs, GA4/GTM, Google/Meta Ads, ERPs, POS, bank feeds) — adopted as the primary operating view across 4 client verticals.",
             "Developed 10+ financial reporting systems (cash flow, P&L, margin). Automated bank reconciliation reduced daily manual work from ~2h to ~10min, enabling near-real-time tracking.",
             "Managed R$100K+ in annual media budgets across Google, Meta, and 10+ marketplaces — achieving ~20% average CPA reduction through channel mix optimization.",
@@ -1823,10 +1810,10 @@ export default function PortfolioEduardo() {
                             className="space-y-6 text-zinc-400 text-base lg:text-[19.8px] leading-loose lg:text-right"
                         >
                             <p>
-                                Over 9 years, I went from closing deals at <span className="text-white font-medium">Omie</span> — Brazil's leading cloud ERP — to strategic consulting and now <span className="text-white font-medium">Data Analytics</span>: diagnosing where <span className="text-white font-medium">SaaS, E-Commerce, and Fintech</span> firms lose revenue, and building the infrastructure to capture it.
+                                I have 5 years in analytics — independent consulting for SMBs since 2021 — after 2 years of consultative B2B SaaS sales at <span className="text-white font-medium">Omie</span>, Brazil's leading cloud ERP. I build <span className="text-white font-medium">governed analytics layers</span> (dbt models, tested metric definitions, semantic layers) and the dashboards and AI analysts that read from them.
                             </p>
                             <p>
-                                Because I've sat in the revenue meetings, I don't just write queries or build pipelines — I understand the <span className="text-white font-medium">business problem behind the ticket</span>. As <span className="text-white font-medium">BI Lead at Torus Analytics</span>, I've architected reporting for dozens of <span className="text-white font-medium">SMB and enterprise</span> operations. Now, through my residency at <span className="text-white font-medium">TripleTen</span>, I'm deepening expertise in <span className="text-white font-medium">ML, predictive modeling, and AI Agents</span>.
+                                Because I've sat in the revenue meetings, I don't just write queries or build pipelines — I understand the <span className="text-white font-medium">business problem behind the ticket</span>. Right now I'm building the data platform for a <span className="text-white font-medium">live specialty-coffee e-commerce</span>: contribution margin by channel, monthly P&L, cost accounting, and an AI analyst that answers questions over SQL without ever computing a number itself. In parallel, the <span className="text-white font-medium">TripleTen</span> Data Science program is deepening my statistics and ML.
                             </p>
                         </motion.div>
 
@@ -1921,7 +1908,28 @@ export default function PortfolioEduardo() {
                                 <div className="text-xs text-zinc-400 italic mt-2">Falconi · Lean Six Sigma Green Belt</div>
                             </div>
 
-                            {/* Card 5 — Databricks */}
+                            {/* Card 5 — TripleTen */}
+                            <div className="sm:col-span-2 bg-zinc-950/60 border border-white/10 rounded-2xl p-5 group/edu transition-all hover:border-sky-500/30">
+                                <a
+                                    href="https://tripleten.com/data-scientist/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-between mb-3 cursor-pointer group/link"
+                                >
+                                    <img
+                                        src={new URL('../assets/logos/tripleten.png', import.meta.url).href}
+                                        alt="TripleTen"
+                                        className="h-6 w-auto object-contain brightness-0 invert opacity-80 group-hover/edu:opacity-100 group-hover/link:scale-105 transition-all"
+                                        width="120" height="24"
+                                        onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }}
+                                    />
+                                    <GraduationCap className="w-5 h-5 text-sky-400 hidden group-hover/link:scale-110 transition-transform"/>
+                                </a>
+                                <div className="text-[10px] text-zinc-500 font-bold tracking-wider mb-1 uppercase">TRAINING · JUL 2025 – PRESENT</div>
+                                <div className="text-sm font-semibold text-white">TripleTen — Data Science Program (700h+)</div>
+                                <div className="text-xs text-zinc-400 italic mt-2">16 end-to-end projects · statistics, ML, churn modeling, "chat with data" agents (LangChain), Databricks/PySpark</div>
+                            </div>
+                            {/* Card 6 — Databricks */}
                             <div className="bg-zinc-950/60 border border-white/10 rounded-2xl p-5 group/edu transition-all hover:border-orange-500/30">
                                 <a
                                     href="https://www.databricks.com/learn/certification"
@@ -1938,12 +1946,12 @@ export default function PortfolioEduardo() {
                                     />
                                     <BookOpen className="w-5 h-5 text-orange-400 hidden group-hover/link:scale-110 transition-transform"/>
                                 </a>
-                                <div className="text-[10px] text-zinc-500 font-bold tracking-wider mb-1 uppercase">CERTIFICATION</div>
-                                <div className="text-sm font-semibold text-white">Databricks Fundamentals & AI Agent Fundamentals</div>
+                                <div className="text-[10px] text-zinc-500 font-bold tracking-wider mb-1 uppercase">ACCREDITATION</div>
+                                <div className="text-sm font-semibold text-white">Databricks Academy Accreditations — Databricks Fundamentals & AI Agent Fundamentals</div>
                                 <div className="text-xs text-zinc-400 italic mt-2">Issued April 2026 · Medallion Architecture · AI Agents · MCP & AI Integration · Azure Databricks</div>
                             </div>
 
-                            {/* Card 6 — Epic Games */}
+                            {/* Card 7 — Epic Games */}
                             <div className="bg-zinc-950/60 border border-white/10 rounded-2xl p-5 group/edu transition-all hover:border-zinc-400/30">
                                 <a
                                     href="https://store.epicgames.com/"
