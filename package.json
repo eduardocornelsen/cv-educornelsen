@@ -22,8 +22,6 @@
     "@langfuse/otel": "^5.1.0",
     "@langfuse/tracing": "^5.1.0",
     "@opentelemetry/sdk-node": "^0.214.0",
-    "@react-three/drei": "^10.7.7",
-    "@react-three/fiber": "^9.5.0",
     "@tailwindcss/vite": "^4.1.14",
     "@types/d3": "^7.4.3",
     "@vitejs/plugin-react": "^5.0.4",
@@ -40,7 +38,6 @@
     "react-router-dom": "^7.13.1",
     "recharts": "^3.7.0",
     "remark-gfm": "^4.0.1",
-    "three": "^0.183.2",
     "vite": "^6.2.0"
   },
   "devDependencies": {

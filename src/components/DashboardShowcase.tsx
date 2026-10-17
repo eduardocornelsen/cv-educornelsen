@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { BarChart3, TrendingUp, Users, DollarSign, ShoppingCart, Activity, ArrowUpRight, Target, Lightbulb } from 'lucide-react';
 import { trackEvent } from '../utils/analytics';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -151,9 +151,6 @@ export default function DashboardShowcase({
   const [activeTab, setActiveTab] = useState(dashboards[0].id);
   const activeDashboard = dashboards.find(d => d.id === activeTab) || dashboards[0];
 
-  const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0.1, 0.4], [50, -50]);
-  const rotateX = useTransform(scrollYProgress, [0.1, 0.4], [5, -5]);
 
   return (
     <section className="py-24 px-6 bg-zinc-950">
@@ -163,7 +160,7 @@ export default function DashboardShowcase({
             {subtitle}
           </div>
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-3xl md:text-5xl font-bold tracking-tight mb-4"
@@ -171,7 +168,7 @@ export default function DashboardShowcase({
             {title}
           </motion.h2>
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
@@ -193,7 +190,7 @@ export default function DashboardShowcase({
                 trackEvent('Dashboard', 'Switch Dashboard', dashboard.id, { dashboard_id: dashboard.id });
               }}
               className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium transition-all ${activeTab === dashboard.id
-                  ? 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)]'
+                  ? 'bg-white text-black'
                   : 'bg-zinc-900 text-zinc-400 hover:bg-zinc-800 hover:text-white'
                 }`}
             >
@@ -206,7 +203,6 @@ export default function DashboardShowcase({
         {/* Dashboard Mockup */}
         <motion.div
           key={activeTab}
-          style={{ y, rotateX, perspective: 1000 }}
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}

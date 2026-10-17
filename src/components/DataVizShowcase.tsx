@@ -536,7 +536,7 @@ export default function DataVizShowcase() {
 
                 {/* Header */}
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+                    initial={false} whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: '-100px' }} transition={{ duration: 0.8 }}
                     className="text-center mb-14"
                 >
@@ -584,7 +584,7 @@ export default function DataVizShowcase() {
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
                                 {liveKpi.map((k, i) => (
                                     <motion.div key={i}
-                                        initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }}
+                                        initial={false} whileInView={{ opacity: 1, scale: 1 }}
                                         viewport={{ once: true }} transition={{ delay: i * 0.06 }}
                                         className="bg-zinc-900 border border-white/5 rounded-2xl p-4 relative overflow-hidden"
                                     >

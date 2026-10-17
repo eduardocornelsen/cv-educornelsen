@@ -3,10 +3,31 @@
 @source "./components/**/*.{ts,tsx}";
 @source "../index.html";
 
+/*
+ * Layout: one 72rem column, left-aligned, sections separated by hairlines;
+ * the data-viz demos keep their own dark stage.
+ * Neutrals lean slightly green toward the accent. Light is the default,
+ * dark follows the OS (Tailwind v4 reads these as var(--color-*), so the
+ * media block below re-themes every utility that uses them).
+ */
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Schibsted Grotesk", "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
 
+  --color-paper: #F6F7F5;
+  --color-surface: #FFFFFF;
+  --color-surface-2: #EEF1EE;
+  --color-ink: #16201B;
+  --color-muted: #47534D;
+  --color-subtle: #5C6862;
+  --color-line: #DCE2DE;
+  --color-line-strong: #B9C3BD;
+  --color-accent: #0A7350;
+  --color-accent-strong: #085E42;
+  --color-accent-ink: #FFFFFF;
+
+  /* Kept for the data-viz demos and chatbot window, which use their own dark stage */
   --color-torus-bg: #050505;
   --color-torus-surface: #121212;
   --color-torus-border: #262626;
@@ -14,7 +35,6 @@
   --color-torus-text: #F5F5F5;
   --color-torus-muted: #A3A3A3;
 
-  /* Chatbot cyberpunk terminal theme */
   --color-cyber-bg:       #050505;
   --color-cyber-surface:  #0A0F0A;
   --color-cyber-border:   #00FFFF;
@@ -23,15 +43,45 @@
   --color-cyber-text:     #D4D4D4;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-paper: #0D1210;
+    --color-surface: #131A16;
+    --color-surface-2: #18211C;
+    --color-ink: #E7EDE9;
+    --color-muted: #AAB6AF;
+    --color-subtle: #8E9A93;
+    --color-line: #25302A;
+    --color-line-strong: #3A4740;
+    --color-accent: #5BD1A3;
+    --color-accent-strong: #7ADDB6;
+    --color-accent-ink: #06140E;
+    color-scheme: dark;
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  background-color: transparent;
-  color: var(--color-torus-text);
+  background-color: var(--color-paper);
+  color: var(--color-ink);
   font-family: var(--font-sans);
+  font-size: 16px;
   -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { text-wrap: balance; }
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
 
 /* Custom scrollbar */
@@ -49,16 +99,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-torus-bg);
+  background: var(--color-paper);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-torus-border);
+  background: var(--color-line-strong);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-torus-muted);
+  background: var(--color-subtle);
 }
 
 @keyframes burn {
