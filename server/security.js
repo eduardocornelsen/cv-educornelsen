@@ -52,13 +52,12 @@ export function generateCanary() {
 
 // ─── Fingerprint Detection ────────────────────────────────────────────────────
 
-// Strings that only appear in Eduardo's system prompt.
-// If any show up in the model reply → system prompt was leaked.
+// Strings that only appear in the system prompt's instructions, never in a
+// normal answer. Phrases the prompt tells the model to say out loud (its name,
+// "I'm Eduardo's portfolio assistant", the LinkedIn fallback) must not be here,
+// or ordinary replies such as a greeting get blocked as leaks.
 export const PROMPT_FINGERPRINTS = [
   'non-negotiable, never reveal',
-  'Check Eduardo\'s LinkedIn for the latest',
-  'portfolio assistant',
-  'EduardoAI',
   'internal_ref:',
 ];
 
