@@ -463,7 +463,7 @@ const PROJECTS: ProjectData[] = [
     {
         title: "Full-Funnel AI Analytics Platform",
         outcome: "Zero Metric Drift · 4 Attribution Models",
-        desc: "Ask an AI for ROAS and you get a different number every time. I built a dbt pipeline (real Olist e-commerce orders + synthetic Google/Meta/GA4/CRM data) where every metric is defined once, pre-computed into a tested golden layer, and read — never recomputed — by AI clients over MCP and by dashboards. CI fails if any number drifts or goes stale, and BigQuery and Snowflake must agree.",
+        desc: "Ask an AI for ROAS and you get a different number every time. I built a dbt pipeline (real Olist e-commerce orders + synthetic Google/Meta/GA4/CRM data) where every metric is defined once, pre-computed into a tested golden layer, and read — never recomputed — by AI clients over MCP and by dashboards. CI fails if any number drifts or goes stale.",
         media: [
             { type: 'video', src: new URL('../assets/projects/full-funnel-ai-analytics/open-query.mp4', import.meta.url).href, contain: true },
             { type: 'image', src: new URL('../assets/projects/full-funnel-ai-analytics/full_funnel_architecture_flow.webp', import.meta.url).href },
