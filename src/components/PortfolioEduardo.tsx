@@ -5,11 +5,11 @@ import { Chatbot } from './chatbot';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-import governedAnalystReadme from '../content/projects/governed-analyst/README.md?raw';
 import fullFunnelReadme from '../content/projects/full-funnel-ai-analytics/README.md?raw';
 import punksqlReadme from '../content/projects/punksql/README.md?raw';
 import leadEngineReadme from '../content/projects/lead_engine/README.md?raw';
 import epicReadme from '../content/projects/epic-store-analysis/README.md?raw';
+import musicReadme from '../content/projects/music-insights-ai-alt/README.md?raw';
 import portfolioInfraReadme from '../content/projects/portfolio-infra/README.md?raw';
 import {
     ArrowRight, LineChart as BarChart3, Bot, Zap, BookOpen, Database,
@@ -410,8 +410,7 @@ export type ProjectData = {
     coverContain?: boolean;
     gradient: string;
     tags: string[];
-    // Absent when the code is private (client work).
-    github?: string;
+    github: string;
     liveUrl?: string;
     presentationUrl?: string;
     readme?: string;
@@ -419,18 +418,6 @@ export type ProjectData = {
 };
 
 const PROJECTS: ProjectData[] = [
-    {
-        title: "Governed AI Analyst for a Live E-commerce",
-        cover: new URL('../assets/projects/governed-analyst/cover.svg', import.meta.url).href,
-        outcome: "Live on a real business · Client work",
-        desc: "Owners of a specialty-coffee e-commerce ask questions in plain language and get contribution margin, P&L and channel numbers that come straight from tested models. The pipeline computes, the AI only reads: read-only SQL with an allowlist, row-level security, a semantic schema that fails CI on drift, and a checker that rejects any number not in the query results.",
-        media: [
-            { type: 'image', src: new URL('../assets/projects/governed-analyst/cover.svg', import.meta.url).href, contain: true },
-        ],
-        gradient: "from-emerald-500 to-teal-500",
-        tags: ["dbt", "PostgreSQL", "Row-level security", "Claude API"],
-        readme: governedAnalystReadme,
-    },
     {
         title: "Full-Funnel AI Analytics Platform",
         cover: new URL('../assets/projects/full-funnel-ai-analytics/marketing-dashboard.webp', import.meta.url).href,
@@ -448,7 +435,7 @@ const PROJECTS: ProjectData[] = [
             { type: 'image', src: new URL('../assets/projects/full-funnel-ai-analytics/marketing-dashboard.webp', import.meta.url).href },
         ],
         gradient: "from-emerald-500 to-cyan-500",
-        tags: ["dbt", "DuckDB", "MCP", "Semantic Layer"],
+        tags: ["dbt", "BigQuery", "MCP", "React", "TypeScript", "Claude", "Semantic Layer"],
         github: "https://github.com/eduardocornelsen/full-funnel-ai-analytics",
         presentationUrl: "https://drive.google.com/file/d/1GfNopUxsnO8gr29wYX1d5ldCjfeyh-fJ/view?usp=drive_link",
         readme: fullFunnelReadme,
@@ -531,6 +518,29 @@ const PROJECTS: ProjectData[] = [
         readme: portfolioInfraReadme,
         images: {},
     },
+    {
+        title: "MusicInsights AI",
+        cover: new URL('../assets/projects/spotify-project/dashboard.webp', import.meta.url).href,
+        outcome: "160k+ Tracks · 100 Years of Data",
+        desc: "What separates a hit from a miss? I analyzed 160k+ tracks spanning 100 years of music evolution using an AI consultant powered by LangChain and Gemini 3 Flash — surfacing interactive trend visualizations and answering music insight questions in natural language.",
+        media: [
+            { type: 'image', src: new URL('../assets/projects/spotify-project/dashboard.webp', import.meta.url).href },
+            { type: 'image', src: new URL('../assets/projects/spotify-project/chatbot.webp', import.meta.url).href },
+            { type: 'image', src: new URL('../assets/projects/spotify-project/insights.webp', import.meta.url).href },
+            { type: 'image', src: new URL('../assets/projects/spotify-project/Architecture.png', import.meta.url).href, contain: true },
+        ],
+        gradient: "from-sky-500 to-blue-500",
+        tags: ["LangChain", "Gemini 3 Flash", "Streamlit", "Pandas"],
+        github: "https://github.com/eduardocornelsen/music-insights-ai",
+        liveUrl: "https://spotify-music-insights-ai.streamlit.app/",
+        readme: musicReadme,
+        images: {
+            'chatbot.webp': new URL('../assets/projects/spotify-project/chatbot.webp', import.meta.url).href,
+            'dashboard.webp': new URL('../assets/projects/spotify-project/dashboard.webp', import.meta.url).href,
+            'insights.webp': new URL('../assets/projects/spotify-project/insights.webp', import.meta.url).href,
+            'architecture.png': new URL('../assets/projects/spotify-project/Architecture.png', import.meta.url).href,
+        },
+    }
 ];
 
 const EXPERIENCES: { role: string; badge?: string; company: string; period: string; logo: string; intro?: string; bullets: string[] }[] = [
@@ -998,14 +1008,10 @@ const ProjectCard = ({ proj, onOpen }: { proj: ProjectData; onOpen: () => void }
                         Slides
                     </a>
                 )}
-                {proj.github ? (
-                    <a href={proj.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-ink hover:text-accent"
-                       onClick={() => trackEvent('Project', 'Click GitHub', proj.title, { project_name: proj.title })}>
-                        <GithubIcon className="w-3.5 h-3.5" /> Code
-                    </a>
-                ) : (
-                    <span className="text-muted">Code private</span>
-                )}
+                <a href={proj.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-ink hover:text-accent"
+                   onClick={() => trackEvent('Project', 'Click GitHub', proj.title, { project_name: proj.title })}>
+                    <GithubIcon className="w-3.5 h-3.5" /> Code
+                </a>
             </div>
         </div>
     </article>
@@ -1317,12 +1323,10 @@ export default function PortfolioEduardo() {
                                             <Zap className="w-4 h-4" /> {selectedProject.title === 'PunkSQL' ? 'Play' : 'Live demo'}
                                         </a>
                                     )}
-                                    {selectedProject.github && (
-                                        <a href={selectedProject.github} target="_blank" rel="noreferrer" className={BTN_SECONDARY}
-                                           onClick={() => trackEvent('Project Modal', 'Click GitHub', selectedProject.title, { project_name: selectedProject.title })}>
-                                            <GithubIcon /> GitHub
-                                        </a>
-                                    )}
+                                    <a href={selectedProject.github} target="_blank" rel="noreferrer" className={BTN_SECONDARY}
+                                       onClick={() => trackEvent('Project Modal', 'Click GitHub', selectedProject.title, { project_name: selectedProject.title })}>
+                                        <GithubIcon /> GitHub
+                                    </a>
                                     {selectedProject.presentationUrl && (
                                         <a href={selectedProject.presentationUrl} target="_blank" rel="noreferrer" className={BTN_SECONDARY}
                                            onClick={() => trackEvent('Project Modal', 'Click Presentation', selectedProject.title, { project_name: selectedProject.title })}>
